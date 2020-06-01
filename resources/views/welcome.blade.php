@@ -62,9 +62,10 @@
                 margin-bottom: 30px;
             }
         </style>
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
+        <!--div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
@@ -95,6 +96,12 @@
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
             </div>
+        </div-->
+
+        <div id="app">
+            <example-component></example-component>
         </div>
+
+        <script defer src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>
