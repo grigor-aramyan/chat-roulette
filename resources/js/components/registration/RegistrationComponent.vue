@@ -8,7 +8,7 @@
             <personal-info-component @personal-info-filled="personalInfoFilled"></personal-info-component>
         </div>
         <div v-else-if="currentSubPage == 'THREE_QS'">
-            <three-qs-component></three-qs-component>
+            <three-qs-component @questions-submitted="questionsSubmitted"></three-qs-component>
         </div>
         <div v-else-if="currentSubPage == 'CURRENT_STATUS'">
             <current-status-component @status-picked="addStatus"></current-status-component>
@@ -33,7 +33,11 @@
                 sex: 'MALE',
                 city: '',
                 photo: null,
-                currentSubPage: PERSONAL_INFO
+
+                questionOne: '',
+                questionTwo: '',
+                questionThree: '',
+                currentSubPage: THREE_QS
             }
         },
 
@@ -52,6 +56,12 @@
                 this.city = city;
                 this.photo = photo;
                 this.currentSubPage = THREE_QS;
+            },
+            questionsSubmitted({ questionOne, questionTwo, questionThree }) {
+                this.questionOne = questionOne;
+                this.questionTwo = questionTwo;
+                this.questionThree = questionThree;
+                this.currentSubPage = CURRENT_STATUS;
             }
         }
     }

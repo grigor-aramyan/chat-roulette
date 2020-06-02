@@ -2188,7 +2188,10 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       sex: 'MALE',
       city: '',
       photo: null,
-      currentSubPage: PERSONAL_INFO
+      questionOne: '',
+      questionTwo: '',
+      questionThree: '',
+      currentSubPage: THREE_QS
     };
   },
   methods: {
@@ -2211,6 +2214,15 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       this.city = city;
       this.photo = photo;
       this.currentSubPage = THREE_QS;
+    },
+    questionsSubmitted: function questionsSubmitted(_ref2) {
+      var questionOne = _ref2.questionOne,
+          questionTwo = _ref2.questionTwo,
+          questionThree = _ref2.questionThree;
+      this.questionOne = questionOne;
+      this.questionTwo = questionTwo;
+      this.questionThree = questionThree;
+      this.currentSubPage = CURRENT_STATUS;
     }
   }
 });
@@ -2232,11 +2244,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'three Qs'
+      questionOne: '',
+      questionTwo: '',
+      questionThree: '',
+      error: ''
     };
+  },
+  methods: {
+    next: function next() {
+      if (this.questionOne && this.questionTwo && this.questionThree) {
+        var questions = {
+          questionOne: this.questionOne,
+          questionTwo: this.questionTwo,
+          questionThree: this.questionThree
+        };
+        this.$emit('questions-submitted', questions);
+      } else {
+        this.error = 'All questions required!';
+      }
+    }
   }
 });
 
@@ -38214,7 +38254,15 @@ var render = function() {
           1
         )
       : _vm.currentSubPage == "THREE_QS"
-      ? _c("div", [_c("three-qs-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("three-qs-component", {
+              on: { "questions-submitted": _vm.questionsSubmitted }
+            })
+          ],
+          1
+        )
       : _vm.currentSubPage == "CURRENT_STATUS"
       ? _c(
           "div",
@@ -38250,7 +38298,84 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("h1", [_vm._v(_vm._s(_vm.title))])])
+  return _c("div", [
+    _c("h1", [_vm._v("Three Questions")]),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.questionOne,
+          expression: "questionOne"
+        }
+      ],
+      attrs: { placeholder: "Question 1" },
+      domProps: { value: _vm.questionOne },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.questionOne = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.questionTwo,
+          expression: "questionTwo"
+        }
+      ],
+      attrs: { placeholder: "Question 2" },
+      domProps: { value: _vm.questionTwo },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.questionTwo = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.questionThree,
+          expression: "questionThree"
+        }
+      ],
+      attrs: { placeholder: "Question 3" },
+      domProps: { value: _vm.questionThree },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.questionThree = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.error
+      ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.next } }, [_vm._v("Next")])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
