@@ -2048,11 +2048,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var WANT_TO_CONNECT = 'WANT_TO_CONNECT';
+var A_BIT_LATER = 'A_BIT_LATER';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'current status'
+      picked: WANT_TO_CONNECT,
+      error: ''
     };
+  },
+  methods: {
+    next: function next() {
+      if (this.picked) {
+        this.$emit('status-picked', this.picked);
+      }
+    }
   }
 });
 
@@ -2118,13 +2137,17 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
   data: function data() {
     return {
       purpose: '',
-      currentSubPage: 'CONNECTION_PURPOSE'
+      status: '',
+      currentSubPage: CURRENT_STATUS
     };
   },
   methods: {
     addPurpose: function addPurpose(purpose) {
       this.purpose = purpose;
       this.currentSubPage = PERSONAL_INFO;
+    },
+    addStatus: function addStatus(status) {
+      this.status = status;
     }
   }
 });
@@ -37899,7 +37922,55 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("h1", [_vm._v(_vm._s(_vm.title))])])
+  return _c("div", [
+    _c("h1", [_vm._v("Current status")]),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.picked,
+          expression: "picked"
+        }
+      ],
+      attrs: { type: "radio", id: "one", value: "WANT_TO_CONNECT" },
+      domProps: { checked: _vm._q(_vm.picked, "WANT_TO_CONNECT") },
+      on: {
+        change: function($event) {
+          _vm.picked = "WANT_TO_CONNECT"
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "one" } }, [_vm._v("Want to connect")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.picked,
+          expression: "picked"
+        }
+      ],
+      attrs: { type: "radio", id: "two", value: "A_BIT_LATER" },
+      domProps: { checked: _vm._q(_vm.picked, "A_BIT_LATER") },
+      on: {
+        change: function($event) {
+          _vm.picked = "A_BIT_LATER"
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "two" } }, [_vm._v("A bit later")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.next } }, [_vm._v("Next")])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37965,7 +38036,15 @@ var render = function() {
       : _vm.currentSubPage == "THREE_QS"
       ? _c("div", [_c("three-qs-component")], 1)
       : _vm.currentSubPage == "CURRENT_STATUS"
-      ? _c("div", [_c("current-status-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("current-status-component", {
+              on: { "status-picked": _vm.addStatus }
+            })
+          ],
+          1
+        )
       : _vm._e()
   ])
 }

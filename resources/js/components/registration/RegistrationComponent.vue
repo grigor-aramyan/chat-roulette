@@ -11,7 +11,7 @@
             <three-qs-component></three-qs-component>
         </div>
         <div v-else-if="currentSubPage == 'CURRENT_STATUS'">
-            <current-status-component></current-status-component>
+            <current-status-component @status-picked="addStatus"></current-status-component>
         </div>
     </div>
 </template>
@@ -27,7 +27,8 @@
         data() {
             return {
                 purpose: '',
-                currentSubPage: 'CONNECTION_PURPOSE'
+                status: '',
+                currentSubPage: CURRENT_STATUS
             }
         },
 
@@ -35,6 +36,9 @@
             addPurpose(purpose) {
                 this.purpose = purpose;
                 this.currentSubPage = PERSONAL_INFO;
+            },
+            addStatus(status) {
+                this.status = status;
             }
         }
     }
