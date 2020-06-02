@@ -112,13 +112,13 @@
         <script>
             // Your web app's Firebase configuration
             var firebaseConfig = {
-                apiKey: process.env.FIREBASE_RD_API_KEY,
-                authDomain: process.env.FIREBASE_RD_AUTH_DOMAIN,
-                databaseURL: process.env.FIREBASE_RD_DATABASE_URL,
-                projectId: process.env.FIREBASE_RD_PROJECT_ID,
-                storageBucket: process.env.FIREBASE_RD_STORAGE_BUCKET,
-                messagingSenderId: process.env.FIREBASE_RD_MESSAGING_SENDER_ID,
-                appId: process.env.FIREBASE_RD_APP_ID
+                apiKey: '{{ env('FIREBASE_RD_API_KEY') }}',
+                authDomain: '{{ env('FIREBASE_RD_AUTH_DOMAIN') }}',
+                databaseURL: '{{ env('FIREBASE_RD_DATABASE_URL') }}',
+                projectId: '{{ env('FIREBASE_RD_PROJECT_ID') }}',
+                storageBucket: '{{ env('FIREBASE_RD_STORAGE_BUCKET') }}',
+                messagingSenderId: '{{ env('FIREBASE_RD_MESSAGING_SENDER_ID') }}',
+                appId: '{{ env('FIREBASE_RD_APP_ID') }}'
             };
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
