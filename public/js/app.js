@@ -2092,11 +2092,56 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var MALE = 'MALE';
+var FEMALE = 'FEMALE';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'personal info'
+      name: '',
+      age: 0,
+      sex: MALE,
+      city: '',
+      photo: null,
+      error: ''
     };
+  },
+  methods: {
+    next: function next() {
+      if (!this.name) {
+        this.error = 'Name required';
+      } else if (this.age < 10) {
+        this.error = 'Age should be above 10 years';
+      } else if (!this.city) {
+        this.error = 'Country, city required';
+      } else {
+        var personalInfo = {
+          name: this.name,
+          age: this.age,
+          sex: this.sex,
+          city: this.city,
+          photo: this.photo
+        };
+        this.$emit('personal-info-filled', personalInfo);
+      }
+    }
   }
 });
 
@@ -2138,7 +2183,12 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
     return {
       purpose: '',
       status: '',
-      currentSubPage: CURRENT_STATUS
+      name: '',
+      age: 0,
+      sex: 'MALE',
+      city: '',
+      photo: null,
+      currentSubPage: PERSONAL_INFO
     };
   },
   methods: {
@@ -2148,6 +2198,19 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
     },
     addStatus: function addStatus(status) {
       this.status = status;
+    },
+    personalInfoFilled: function personalInfoFilled(_ref) {
+      var name = _ref.name,
+          age = _ref.age,
+          sex = _ref.sex,
+          city = _ref.city,
+          photo = _ref.photo;
+      this.name = name;
+      this.age = age;
+      this.sex = sex;
+      this.city = city;
+      this.photo = photo;
+      this.currentSubPage = THREE_QS;
     }
   }
 });
@@ -37994,7 +38057,116 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("h1", [_vm._v(_vm._s(_vm.title))])])
+  return _c("div", [
+    _c("h1", [_vm._v("Personal info")]),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.name,
+          expression: "name"
+        }
+      ],
+      attrs: { placeholder: "Full name" },
+      domProps: { value: _vm.name },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.name = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        { name: "model", rawName: "v-model", value: _vm.age, expression: "age" }
+      ],
+      attrs: { min: "10", type: "number", placeholder: "Age" },
+      domProps: { value: _vm.age },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.age = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "gender" } }, [_vm._v("Gender")]),
+    _vm._v(" "),
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.sex,
+            expression: "sex"
+          }
+        ],
+        attrs: { id: "gender" },
+        on: {
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.sex = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+          }
+        }
+      },
+      [
+        _c("option", { attrs: { value: "MALE" } }, [_vm._v("Male")]),
+        _vm._v(" "),
+        _c("option", { attrs: { value: "FEMALE" } }, [_vm._v("Female")])
+      ]
+    ),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.city,
+          expression: "city"
+        }
+      ],
+      attrs: { placeholder: "Country, city" },
+      domProps: { value: _vm.city },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.city = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _vm.error
+      ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.next } }, [_vm._v("Next")])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38032,7 +38204,15 @@ var render = function() {
           1
         )
       : _vm.currentSubPage == "PERSONAL_INFO"
-      ? _c("div", [_c("personal-info-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("personal-info-component", {
+              on: { "personal-info-filled": _vm.personalInfoFilled }
+            })
+          ],
+          1
+        )
       : _vm.currentSubPage == "THREE_QS"
       ? _c("div", [_c("three-qs-component")], 1)
       : _vm.currentSubPage == "CURRENT_STATUS"

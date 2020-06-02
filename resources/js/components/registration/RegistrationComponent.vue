@@ -5,7 +5,7 @@
             <connection-purpose-component @pick-purpose="addPurpose"></connection-purpose-component>
         </div>
         <div v-else-if="currentSubPage == 'PERSONAL_INFO'">
-            <personal-info-component></personal-info-component>
+            <personal-info-component @personal-info-filled="personalInfoFilled"></personal-info-component>
         </div>
         <div v-else-if="currentSubPage == 'THREE_QS'">
             <three-qs-component></three-qs-component>
@@ -28,7 +28,12 @@
             return {
                 purpose: '',
                 status: '',
-                currentSubPage: CURRENT_STATUS
+                name: '',
+                age: 0,
+                sex: 'MALE',
+                city: '',
+                photo: null,
+                currentSubPage: PERSONAL_INFO
             }
         },
 
@@ -39,6 +44,14 @@
             },
             addStatus(status) {
                 this.status = status;
+            },
+            personalInfoFilled({ name, age, sex, city, photo }) {
+                this.name = name;
+                this.age = age;
+                this.sex = sex;
+                this.city = city;
+                this.photo = photo;
+                this.currentSubPage = THREE_QS;
             }
         }
     }
