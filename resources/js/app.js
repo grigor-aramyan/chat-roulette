@@ -16,6 +16,11 @@ window.Vue.use(Vuex);
 const ExampleComponent = require('./components/ExampleComponent.vue').default;
 const LoginComponent = require('./components/LoginComponent.vue').default;
 const HomeComponent = require('./components/HomeComponent.vue').default;
+const RegistrationComponent = require('./components/registration/RegistrationComponent.vue').default;
+const ConnectionPurposeComponent = require('./components/registration/ConnectionPurposeComponent.vue').default;
+const PersonalInfoComponent = require('./components/registration/PersonalInfoComponent.vue').default;
+const ThreeQsComponent = require('./components/registration/ThreeQsComponent.vue').default;
+const CurrentStatusComponent = require('./components/registration/CurrentStatusComponent.vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -31,13 +36,19 @@ const HomeComponent = require('./components/HomeComponent.vue').default;
 Vue.component('example-component', ExampleComponent);
 Vue.component('login-component', LoginComponent);
 Vue.component('home-component', HomeComponent);
+Vue.component('registration-component', RegistrationComponent);
+Vue.component('connection-purpose-component', ConnectionPurposeComponent);
+Vue.component('personal-info-component', PersonalInfoComponent);
+Vue.component('three-qs-component', ThreeQsComponent);
+Vue.component('current-status-component', CurrentStatusComponent);
 
 /**
  * Creating routes for Vue SPA
  */
 const routes = [
     { path: '/example', component: ExampleComponent },
-    { path: '/login', component: LoginComponent }
+    { path: '/login', component: LoginComponent },
+    { path: '/register', component: RegistrationComponent }
 ]
 
 const router = new VueRouter({
