@@ -15,6 +15,7 @@ window.Vue.use(Vuex);
 // Components
 const ExampleComponent = require('./components/ExampleComponent.vue').default;
 const LoginComponent = require('./components/LoginComponent.vue').default;
+const HomeComponent = require('./components/HomeComponent.vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -29,6 +30,7 @@ const LoginComponent = require('./components/LoginComponent.vue').default;
 
 Vue.component('example-component', ExampleComponent);
 Vue.component('login-component', LoginComponent);
+Vue.component('home-component', HomeComponent);
 
 /**
  * Creating routes for Vue SPA

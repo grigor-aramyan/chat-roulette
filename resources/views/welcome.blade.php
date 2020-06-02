@@ -99,7 +99,7 @@
         </div-->
 
         <div id="app">
-            <example-component></example-component>
+            <home-component></home-component>
         </div>
 
         <!-- The core Firebase JS SDK is always required and must be listed first -->
