@@ -2000,11 +2000,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var JUST_CHATTING = 'JUST_CHATTING';
+var RELATIONSHIP = 'RELATIONSHIP';
+var SEX = 'SEX';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'connection purpose'
+      picked: JUST_CHATTING,
+      error: ''
     };
+  },
+  methods: {
+    next: function next() {
+      if (this.picked) {
+        this.$emit('pick-purpose', this.picked);
+      }
+    }
   }
 });
 
@@ -2094,9 +2117,15 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'Registration',
-      currentSubPage: ''
+      purpose: '',
+      currentSubPage: 'CONNECTION_PURPOSE'
     };
+  },
+  methods: {
+    addPurpose: function addPurpose(purpose) {
+      this.purpose = purpose;
+      this.currentSubPage = PERSONAL_INFO;
+    }
   }
 });
 
@@ -37776,7 +37805,77 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("h1", [_vm._v(_vm._s(_vm.title))])])
+  return _c("div", [
+    _c("h1", [_vm._v("Connection purpose")]),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.picked,
+          expression: "picked"
+        }
+      ],
+      attrs: { type: "radio", id: "one", value: "JUST_CHATTING" },
+      domProps: { checked: _vm._q(_vm.picked, "JUST_CHATTING") },
+      on: {
+        change: function($event) {
+          _vm.picked = "JUST_CHATTING"
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "one" } }, [_vm._v("Just Chatting")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.picked,
+          expression: "picked"
+        }
+      ],
+      attrs: { type: "radio", id: "two", value: "RELATIONSHIP" },
+      domProps: { checked: _vm._q(_vm.picked, "RELATIONSHIP") },
+      on: {
+        change: function($event) {
+          _vm.picked = "RELATIONSHIP"
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "two" } }, [_vm._v("Relationship")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.picked,
+          expression: "picked"
+        }
+      ],
+      attrs: { type: "radio", id: "three", value: "SEX" },
+      domProps: { checked: _vm._q(_vm.picked, "SEX") },
+      on: {
+        change: function($event) {
+          _vm.picked = "SEX"
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "three" } }, [_vm._v("Sex")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.next } }, [_vm._v("Next")])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37849,10 +37948,18 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v(_vm._s(_vm.title))]),
+    _c("h1", [_vm._v("Registration")]),
     _vm._v(" "),
     _vm.currentSubPage == "CONNECTION_PURPOSE"
-      ? _c("div", [_c("connection-purpose-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("connection-purpose-component", {
+              on: { "pick-purpose": _vm.addPurpose }
+            })
+          ],
+          1
+        )
       : _vm.currentSubPage == "PERSONAL_INFO"
       ? _c("div", [_c("personal-info-component")], 1)
       : _vm.currentSubPage == "THREE_QS"

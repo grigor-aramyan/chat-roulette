@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h1>{{ title }}</h1>
+        <h1>Registration</h1>
         <div v-if="currentSubPage == 'CONNECTION_PURPOSE'">
-            <connection-purpose-component></connection-purpose-component>
+            <connection-purpose-component @pick-purpose="addPurpose"></connection-purpose-component>
         </div>
         <div v-else-if="currentSubPage == 'PERSONAL_INFO'">
             <personal-info-component></personal-info-component>
@@ -26,8 +26,15 @@
 
         data() {
             return {
-                title: 'Registration',
-                currentSubPage: ''
+                purpose: '',
+                currentSubPage: 'CONNECTION_PURPOSE'
+            }
+        },
+
+        methods: {
+            addPurpose(purpose) {
+                this.purpose = purpose;
+                this.currentSubPage = PERSONAL_INFO;
             }
         }
     }
