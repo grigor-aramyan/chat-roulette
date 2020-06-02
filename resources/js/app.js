@@ -14,6 +14,7 @@ window.Vue.use(Vuex);
 
 // Components
 const ExampleComponent = require('./components/ExampleComponent.vue').default;
+const LoginComponent = require('./components/LoginComponent.vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -27,12 +28,14 @@ const ExampleComponent = require('./components/ExampleComponent.vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', ExampleComponent);
+Vue.component('login-component', LoginComponent);
 
 /**
  * Creating routes for Vue SPA
  */
 const routes = [
     { path: '/example', component: ExampleComponent },
+    { path: '/login', component: LoginComponent }
 ]
 
 const router = new VueRouter({
