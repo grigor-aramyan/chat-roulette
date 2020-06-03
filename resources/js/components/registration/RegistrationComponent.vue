@@ -13,10 +13,18 @@
         <div v-else-if="currentSubPage == 'CURRENT_STATUS'">
             <current-status-component @status-picked="addStatus"></current-status-component>
         </div>
+
+        <p v-if="error" style="color:red;">{{ error }}</p>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
+    import {
+        API_BASE_URI,
+        CR_USER_TOKEN
+    } from '../../statics';
+
     const CONNECTION_PURPOSE = 'CONNECTION_PURPOSE';
     const PERSONAL_INFO = 'PERSONAL_INFO';
     const THREE_QS = 'THREE_QS';
@@ -38,7 +46,8 @@
                 questionOne: '',
                 questionTwo: '',
                 questionThree: '',
-                currentSubPage: PERSONAL_INFO
+                currentSubPage: CONNECTION_PURPOSE,
+                error: ''
             }
         },
 
@@ -49,6 +58,44 @@
             },
             addStatus(status) {
                 this.status = status;
+
+                const registration_uri = API_BASE_URI + '/auth/register';
+
+                const payload = {
+                    name: this.name,
+                    email: this.email,
+                    password: this.password,
+                    purpose: this.purpose,
+                    status: this.status,
+                    age: this.age,
+                    sex: this.sex,
+                    city: this.city,
+                    photo: this.photo,
+                    question_one: this.questionOne,
+                    question_two: this.questionTwo,
+                    question_three: this.questionThree
+                };
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                axios.post(registration_uri, payload, config)
+                    .then(res => {
+                        if (res.status == 200) {
+                            const token = `Bearer ${res.data.access_token}`;
+                            localStorage.setItem(CR_USER_TOKEN, token);
+                        } else {
+                            this.error = 'Something wrong happened. Try again or contact with us, please!';
+                            this.currentSubPage = CONNECTION_PURPOSE;
+                        }
+                    })
+                    .catch(err => {
+                        this.error = err.response.data.msg;
+                        this.currentSubPage = CONNECTION_PURPOSE;
+                    });
             },
             personalInfoFilled({ name, password, email, age, sex, city, photo }) {
                 this.name = name;

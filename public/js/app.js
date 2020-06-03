@@ -2179,6 +2179,9 @@ var FEMALE = 'FEMALE';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _statics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../statics */ "./resources/js/statics.js");
 //
 //
 //
@@ -2197,6 +2200,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
+
 var CONNECTION_PURPOSE = 'CONNECTION_PURPOSE';
 var PERSONAL_INFO = 'PERSONAL_INFO';
 var THREE_QS = 'THREE_QS';
@@ -2216,7 +2223,8 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       questionOne: '',
       questionTwo: '',
       questionThree: '',
-      currentSubPage: PERSONAL_INFO
+      currentSubPage: CONNECTION_PURPOSE,
+      error: ''
     };
   },
   methods: {
@@ -2225,7 +2233,41 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       this.currentSubPage = PERSONAL_INFO;
     },
     addStatus: function addStatus(status) {
+      var _this = this;
+
       this.status = status;
+      var registration_uri = _statics__WEBPACK_IMPORTED_MODULE_1__["API_BASE_URI"] + '/auth/register';
+      var payload = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        purpose: this.purpose,
+        status: this.status,
+        age: this.age,
+        sex: this.sex,
+        city: this.city,
+        photo: this.photo,
+        question_one: this.questionOne,
+        question_two: this.questionTwo,
+        question_three: this.questionThree
+      };
+      var config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(registration_uri, payload, config).then(function (res) {
+        if (res.status == 200) {
+          var token = "Bearer ".concat(res.data.access_token);
+          localStorage.setItem(_statics__WEBPACK_IMPORTED_MODULE_1__["CR_USER_TOKEN"], token);
+        } else {
+          _this.error = 'Something wrong happened. Try again or contact with us, please!';
+          _this.currentSubPage = CONNECTION_PURPOSE;
+        }
+      })["catch"](function (err) {
+        _this.error = err.response.data.msg;
+        _this.currentSubPage = CONNECTION_PURPOSE;
+      });
     },
     personalInfoFilled: function personalInfoFilled(_ref) {
       var name = _ref.name,
@@ -38371,6 +38413,10 @@ var render = function() {
           ],
           1
         )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.error
+      ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
       : _vm._e()
   ])
 }
@@ -55478,6 +55524,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ThreeQsComponent_vue_vue_type_template_id_34790110___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/statics.js":
+/*!*********************************!*\
+  !*** ./resources/js/statics.js ***!
+  \*********************************/
+/*! exports provided: API_BASE_URI, CR_USER_TOKEN */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_BASE_URI", function() { return API_BASE_URI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CR_USER_TOKEN", function() { return CR_USER_TOKEN; });
+var API_BASE_URI = 'http://localhost:8000/api';
+var CR_USER_TOKEN = 'CR_USER_TOKEN';
 
 /***/ }),
 
