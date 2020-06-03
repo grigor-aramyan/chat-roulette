@@ -15,10 +15,31 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        if (!($request->name || $request->email || $request->password
+            || $request->purpose || $request->status
+            || $request->age || $request->sex || $request->city
+            || $request->question_one || $request->question_two || $request->question_three))
+            {
+                return json([ 'msg' => 'All fields required' ]);
+            }
+
+        // TODO: usernames should be generated automatically
+        $username = 'username';
+
       $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password),
+        'purpose' => $request->purpose,
+        'status' => $request->status,
+        'username' => $username,
+        'age' => $request->age,
+        'sex' => $request->sex,
+        'city' => $request->city,
+        'photo' => $request->photo,
+        'question_one' => $request->question_one,
+        'question_two' => $request->question_two,
+        'question_three' => $request->question_three
       ]);
 
       $token = auth()->login($user);
