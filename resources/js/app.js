@@ -21,6 +21,7 @@ const ConnectionPurposeComponent = require('./components/registration/Connection
 const PersonalInfoComponent = require('./components/registration/PersonalInfoComponent.vue').default;
 const ThreeQsComponent = require('./components/registration/ThreeQsComponent.vue').default;
 const CurrentStatusComponent = require('./components/registration/CurrentStatusComponent.vue').default;
+const DashboardComponent = require('./components/DashboardComponent.vue').default
 
 /**
  * The following block of code may be used to automatically register your
@@ -41,6 +42,7 @@ Vue.component('connection-purpose-component', ConnectionPurposeComponent);
 Vue.component('personal-info-component', PersonalInfoComponent);
 Vue.component('three-qs-component', ThreeQsComponent);
 Vue.component('current-status-component', CurrentStatusComponent);
+Vue.component('dashboard-component', DashboardComponent);
 
 /**
  * Creating routes for Vue SPA
@@ -48,7 +50,8 @@ Vue.component('current-status-component', CurrentStatusComponent);
 const routes = [
     { path: '/example', component: ExampleComponent },
     { path: '/login', component: LoginComponent },
-    { path: '/register', component: RegistrationComponent }
+    { path: '/register', component: RegistrationComponent },
+    { path: '/dashboard', component: DashboardComponent }
 ]
 
 const router = new VueRouter({
@@ -56,10 +59,16 @@ const router = new VueRouter({
     routes
 })
 
+// import Vuex modules
+const currentUserModule = require('./store/modules/currentUser');
+
 /**
  * Implementing Vuex store
  */
 const store = new Vuex.Store({
+    modules: {
+        currentUser: currentUserModule
+    },
     state: {
         messages: [
             'first message'
