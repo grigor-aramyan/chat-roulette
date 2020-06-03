@@ -2114,6 +2114,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 var MALE = 'MALE';
 var FEMALE = 'FEMALE';
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2121,6 +2123,7 @@ var FEMALE = 'FEMALE';
     return {
       name: '',
       password: '',
+      email: '',
       confirmPassword: '',
       age: 0,
       sex: MALE,
@@ -2143,6 +2146,8 @@ var FEMALE = 'FEMALE';
         this.error = 'Password should contain lower-case, upper-case letters and numbers only';
       } else if (this.password != this.confirmPassword) {
         this.error = 'Password and Confirm password don\'t match';
+      } else if (!this.email) {
+        this.error = 'Email required';
       } else if (this.age < 10) {
         this.error = 'Age should be above 10 years';
       } else if (!this.city) {
@@ -2151,6 +2156,7 @@ var FEMALE = 'FEMALE';
         var personalInfo = {
           name: this.name,
           password: this.password,
+          email: this.email,
           age: this.age,
           sex: this.sex,
           city: this.city,
@@ -2202,6 +2208,7 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       status: '',
       name: '',
       password: '',
+      email: '',
       age: 0,
       sex: 'MALE',
       city: '',
@@ -2223,12 +2230,14 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
     personalInfoFilled: function personalInfoFilled(_ref) {
       var name = _ref.name,
           password = _ref.password,
+          email = _ref.email,
           age = _ref.age,
           sex = _ref.sex,
           city = _ref.city,
           photo = _ref.photo;
       this.name = name;
       this.password = password;
+      this.email = email;
       this.age = age;
       this.sex = sex;
       this.city = city;
@@ -38183,6 +38192,29 @@ var render = function() {
             return
           }
           _vm.confirmPassword = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.email,
+          expression: "email"
+        }
+      ],
+      attrs: { placeholder: "Email" },
+      domProps: { value: _vm.email },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.email = $event.target.value
         }
       }
     }),

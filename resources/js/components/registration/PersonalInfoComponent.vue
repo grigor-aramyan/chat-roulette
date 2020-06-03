@@ -8,6 +8,8 @@
         <br />
         <input v-model="confirmPassword" type="password" placeholder="Confirm password" />
         <br />
+        <input v-model="email" placeholder="Email" />
+        <br />
         <input v-model="age" min="10" type="number" placeholder="Age" />
         <br />
 
@@ -36,6 +38,7 @@
             return {
                 name: '',
                 password: '',
+                email: '',
                 confirmPassword: '',
                 age: 0,
                 sex: MALE,
@@ -48,7 +51,7 @@
         methods: {
             next() {
                 if (!this.name) {
-                    this.error = 'Name required'
+                    this.error = 'Name required';
                 } else if (!this.password) {
                     this.error = 'Password required';
                 } else if (!this.confirmPassword) {
@@ -59,14 +62,17 @@
                     this.error = 'Password should contain lower-case, upper-case letters and numbers only';
                 } else if (this.password != this.confirmPassword) {
                     this.error = 'Password and Confirm password don\'t match';
+                } else if (!this.email) {
+                    this.error = 'Email required';
                 } else if (this.age < 10) {
-                    this.error = 'Age should be above 10 years'
+                    this.error = 'Age should be above 10 years';
                 } else if (!this.city) {
-                    this.error = 'Country, city required'
+                    this.error = 'Country, city required';
                 } else {
                     const personalInfo = {
                         name: this.name,
                         password: this.password,
+                        email: this.email,
                         age: this.age,
                         sex: this.sex,
                         city: this.city,

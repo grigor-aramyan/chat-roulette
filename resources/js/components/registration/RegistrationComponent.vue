@@ -30,6 +30,7 @@
                 status: '',
                 name: '',
                 password: '',
+                email: '',
                 age: 0,
                 sex: 'MALE',
                 city: '',
@@ -49,9 +50,10 @@
             addStatus(status) {
                 this.status = status;
             },
-            personalInfoFilled({ name, password, age, sex, city, photo }) {
+            personalInfoFilled({ name, password, email, age, sex, city, photo }) {
                 this.name = name;
                 this.password = password;
+                this.email = email;
                 this.age = age;
                 this.sex = sex;
                 this.city = city;
