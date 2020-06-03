@@ -2099,6 +2099,8 @@ __webpack_require__.r(__webpack_exports__);
             var token = "Bearer ".concat(res.data.access_token);
             localStorage.setItem(_statics__WEBPACK_IMPORTED_MODULE_1__["CR_USER_TOKEN"], token);
             _this.error = '';
+
+            _this.$router.push('/dashboard');
           } else {
             _this.error = 'Something wrong happened. Try again or contact with us, please!';
           }
@@ -2391,6 +2393,8 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
         if (res.status == 200) {
           var token = "Bearer ".concat(res.data.access_token);
           localStorage.setItem(_statics__WEBPACK_IMPORTED_MODULE_1__["CR_USER_TOKEN"], token);
+
+          _this.$router.push('/dashboard');
         } else {
           _this.error = 'Something wrong happened. Try again or contact with us, please!';
           _this.currentSubPage = CONNECTION_PURPOSE;

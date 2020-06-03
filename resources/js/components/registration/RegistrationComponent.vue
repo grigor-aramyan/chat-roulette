@@ -87,6 +87,8 @@
                         if (res.status == 200) {
                             const token = `Bearer ${res.data.access_token}`;
                             localStorage.setItem(CR_USER_TOKEN, token);
+
+                            this.$router.push('/dashboard');
                         } else {
                             this.error = 'Something wrong happened. Try again or contact with us, please!';
                             this.currentSubPage = CONNECTION_PURPOSE;

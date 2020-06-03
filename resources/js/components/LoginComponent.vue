@@ -57,6 +57,8 @@
                                 localStorage.setItem(CR_USER_TOKEN, token);
 
                                 this.error = '';
+
+                                this.$router.push('/dashboard');
                             } else {
                                 this.error = 'Something wrong happened. Try again or contact with us, please!';
                             }
