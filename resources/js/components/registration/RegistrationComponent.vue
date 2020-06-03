@@ -29,15 +29,15 @@
                 purpose: '',
                 status: '',
                 name: '',
+                password: '',
                 age: 0,
                 sex: 'MALE',
                 city: '',
                 photo: null,
-
                 questionOne: '',
                 questionTwo: '',
                 questionThree: '',
-                currentSubPage: THREE_QS
+                currentSubPage: PERSONAL_INFO
             }
         },
 
@@ -49,8 +49,9 @@
             addStatus(status) {
                 this.status = status;
             },
-            personalInfoFilled({ name, age, sex, city, photo }) {
+            personalInfoFilled({ name, password, age, sex, city, photo }) {
                 this.name = name;
+                this.password = password;
                 this.age = age;
                 this.sex = sex;
                 this.city = city;

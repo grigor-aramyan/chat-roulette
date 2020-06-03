@@ -2110,12 +2110,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var MALE = 'MALE';
 var FEMALE = 'FEMALE';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       name: '',
+      password: '',
+      confirmPassword: '',
       age: 0,
       sex: MALE,
       city: '',
@@ -2127,6 +2133,16 @@ var FEMALE = 'FEMALE';
     next: function next() {
       if (!this.name) {
         this.error = 'Name required';
+      } else if (!this.password) {
+        this.error = 'Password required';
+      } else if (!this.confirmPassword) {
+        this.error = 'Confirm password required';
+      } else if (this.password.length < 8) {
+        this.error = 'Password should be at least 8 chars long';
+      } else if (!(/[A-Z]+/.test(this.password) && /[a-z]+/.test(this.password) && /[0-9]+/.test(this.password))) {
+        this.error = 'Password should contain lower-case, upper-case letters and numbers only';
+      } else if (this.password != this.confirmPassword) {
+        this.error = 'Password and Confirm password don\'t match';
       } else if (this.age < 10) {
         this.error = 'Age should be above 10 years';
       } else if (!this.city) {
@@ -2134,6 +2150,7 @@ var FEMALE = 'FEMALE';
       } else {
         var personalInfo = {
           name: this.name,
+          password: this.password,
           age: this.age,
           sex: this.sex,
           city: this.city,
@@ -2184,6 +2201,7 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       purpose: '',
       status: '',
       name: '',
+      password: '',
       age: 0,
       sex: 'MALE',
       city: '',
@@ -2191,7 +2209,7 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
       questionOne: '',
       questionTwo: '',
       questionThree: '',
-      currentSubPage: THREE_QS
+      currentSubPage: PERSONAL_INFO
     };
   },
   methods: {
@@ -2204,11 +2222,13 @@ var CURRENT_STATUS = 'CURRENT_STATUS';
     },
     personalInfoFilled: function personalInfoFilled(_ref) {
       var name = _ref.name,
+          password = _ref.password,
           age = _ref.age,
           sex = _ref.sex,
           city = _ref.city,
           photo = _ref.photo;
       this.name = name;
+      this.password = password;
       this.age = age;
       this.sex = sex;
       this.city = city;
@@ -38117,6 +38137,52 @@ var render = function() {
             return
           }
           _vm.name = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.password,
+          expression: "password"
+        }
+      ],
+      attrs: { type: "password", placeholder: "Password" },
+      domProps: { value: _vm.password },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.password = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.confirmPassword,
+          expression: "confirmPassword"
+        }
+      ],
+      attrs: { type: "password", placeholder: "Confirm password" },
+      domProps: { value: _vm.confirmPassword },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.confirmPassword = $event.target.value
         }
       }
     }),
