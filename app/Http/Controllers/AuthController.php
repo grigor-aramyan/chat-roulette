@@ -15,13 +15,19 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        if (!($request->name || $request->email || $request->password
-            || $request->purpose || $request->status
-            || $request->age || $request->sex || $request->city
-            || $request->question_one || $request->question_two || $request->question_three))
+        if (!($request->name && $request->email && $request->password
+            && $request->purpose && $request->status
+            && $request->age && $request->sex && $request->city
+            && $request->question_one && $request->question_two && $request->question_three))
             {
-                return json([ 'msg' => 'All fields required' ]);
+                return response()->json([ 'msg' => 'All fields required' ], 400);
             }
+
+        $email = $request->email;
+        $existing_email = User::where('email', $email)->first();
+        if ($existing_email) {
+            return response()->json([ 'msg' => 'User with this email already exists!' ], 400);
+        }
 
         // TODO: usernames should be generated automatically
         $username = 'username';
