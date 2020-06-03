@@ -1969,17 +1969,71 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _statics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../statics */ "./resources/js/statics.js");
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      msg: 'login component'
+      email: '',
+      password: '',
+      error: ''
     };
+  },
+  methods: {
+    doLogin: function doLogin() {
+      var _this = this;
+
+      if (!(this.email && this.password)) {
+        this.error = 'Both fields required';
+      } else if (this.password.length < 8) {
+        this.error = 'Password should contain at least 8 characters';
+      } else if (!(/[A-Z]+/.test(this.password) && /[a-z]+/.test(this.password) && /[0-9]+/.test(this.password))) {
+        this.error = 'Password should contain lower-case, upper-case letters and numbers';
+      } else {
+        var loginUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_1__["API_BASE_URI"], "/auth/login");
+        var payload = {
+          email: this.email,
+          password: this.password
+        };
+        var config = {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(loginUri, payload, config).then(function (res) {
+          if (res.status == 200) {
+            var token = "Bearer ".concat(res.data.access_token);
+            localStorage.setItem(_statics__WEBPACK_IMPORTED_MODULE_1__["CR_USER_TOKEN"], token);
+            _this.error = '';
+          } else {
+            _this.error = 'Something wrong happened. Try again or contact with us, please!';
+          }
+        })["catch"](function (err) {
+          if (err.response.status == 401) {
+            _this.error = 'Unauthorized';
+          } else {
+            _this.error = err.message;
+          }
+        });
+      }
+    }
   }
 });
 
@@ -37978,7 +38032,61 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n    " + _vm._s(_vm.msg) + "\n")])
+  return _c("div", [
+    _c("h1", [_vm._v("Login")]),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.email,
+          expression: "email"
+        }
+      ],
+      attrs: { placeholder: "Email" },
+      domProps: { value: _vm.email },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.email = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.password,
+          expression: "password"
+        }
+      ],
+      attrs: { type: "password", placeholder: "Password" },
+      domProps: { value: _vm.password },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.password = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.error
+      ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.doLogin } }, [_vm._v("Login")])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

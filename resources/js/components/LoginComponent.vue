@@ -1,14 +1,74 @@
 <template>
     <div>
-        {{ msg }}
+        <h1>Login</h1>
+        <input v-model="email" placeholder="Email" />
+        <br />
+        <input v-model="password" type="password" placeholder="Password" />
+        <br />
+
+        <p v-if="error" style="color:red;">{{ error }}</p>
+
+        <button @click="doLogin">Login</button>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
+    import {
+        API_BASE_URI,
+        CR_USER_TOKEN
+    } from '../statics';
+
     export default {
         data() {
             return {
-                msg: 'login component'
+                email: '',
+                password: '',
+                error: ''
+            }
+        },
+
+        methods: {
+            doLogin() {
+                if (!(this.email && this.password)) {
+                    this.error = 'Both fields required';
+                } else if (this.password.length < 8) {
+                    this.error = 'Password should contain at least 8 characters';
+                } else if (!(/[A-Z]+/.test(this.password) && /[a-z]+/.test(this.password) && /[0-9]+/.test(this.password))) {
+                    this.error = 'Password should contain lower-case, upper-case letters and numbers';
+                } else {
+                    const loginUri = `${API_BASE_URI}/auth/login`;
+
+                    const payload = {
+                        email: this.email,
+                        password: this.password
+                    };
+
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    axios.post(loginUri, payload, config)
+                        .then(res => {
+                            if (res.status == 200) {
+                                const token = `Bearer ${res.data.access_token}`;
+                                localStorage.setItem(CR_USER_TOKEN, token);
+
+                                this.error = '';
+                            } else {
+                                this.error = 'Something wrong happened. Try again or contact with us, please!';
+                            }
+                        })
+                        .catch(err => {
+                            if (err.response.status == 401) {
+                                this.error = 'Unauthorized';
+                            } else {
+                                this.error = err.message;
+                            }
+                        });
+                }
             }
         }
     }
