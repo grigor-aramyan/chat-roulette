@@ -6,6 +6,10 @@
 
         <p v-if="pairingUser">Pairing email: {{ pairingUser.email }}</p>
 
+        <div v-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
+            <question-answering-component></question-answering-component>
+        </div>
+
         <p v-if="error" style="color:red;">{{ error }}</p>
     </div>
 </template>
@@ -19,7 +23,10 @@
     import {
         API_BASE_URI,
         CR_USER_TOKEN
-    } from '../statics';
+    } from '../../statics';
+
+    // constants
+    const QUESTIONS_SUBPAGE = 'QUESTIONS_SUBPAGE';
 
     export default {
         mounted() {
@@ -54,6 +61,7 @@
 
         data() {
             return {
+                currentSubPage: QUESTIONS_SUBPAGE,
                 error: ''
             }
         },
@@ -95,6 +103,13 @@
                                 if ('msg' in res.data) {
                                     // TODO: case when no one to pair found
                                 } else if ('id' in res.data) {
+                                    // TODO: got pairing user
+                                    // dispatch event to firebase RD, so pairing user
+                                    // can be notified about pairing and start answering
+                                    // this user questions as well
+                                    // set mode to 'pending' from pairing user side
+                                    // lister to RD events from app.js (?)
+
                                     this.setPairingUser(res.data);
                                 }
                             } else {

@@ -21,7 +21,8 @@ const ConnectionPurposeComponent = require('./components/registration/Connection
 const PersonalInfoComponent = require('./components/registration/PersonalInfoComponent.vue').default;
 const ThreeQsComponent = require('./components/registration/ThreeQsComponent.vue').default;
 const CurrentStatusComponent = require('./components/registration/CurrentStatusComponent.vue').default;
-const DashboardComponent = require('./components/DashboardComponent.vue').default
+const DashboardComponent = require('./components/dashboard/DashboardComponent.vue').default;
+const QuestionAnsweringComponent = require('./components/dashboard/QuestionAnsweringComponent.vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -43,6 +44,7 @@ Vue.component('personal-info-component', PersonalInfoComponent);
 Vue.component('three-qs-component', ThreeQsComponent);
 Vue.component('current-status-component', CurrentStatusComponent);
 Vue.component('dashboard-component', DashboardComponent);
+Vue.component('question-answering-component', QuestionAnsweringComponent);
 
 /**
  * Creating routes for Vue SPA
