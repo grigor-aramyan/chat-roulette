@@ -32,3 +32,5 @@ Route::group([
     Route::post('me', 'AuthController@me');
 
 });
+
+Route::get('pair/find', 'FindPairController')->middleware('auth:api');
