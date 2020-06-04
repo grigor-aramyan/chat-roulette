@@ -61,13 +61,15 @@ const router = new VueRouter({
 
 // import Vuex modules
 const currentUserModule = require('./store/modules/currentUser');
+const pairingUserModule = require('./store/modules/pairingUser');
 
 /**
  * Implementing Vuex store
  */
 const store = new Vuex.Store({
     modules: {
-        currentUser: currentUserModule
+        currentUser: currentUserModule,
+        pairingUser: pairingUserModule
     },
     state: {
         messages: [

@@ -1928,6 +1928,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -1965,12 +1967,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       error: ''
     };
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser'])),
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser'])),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
     currentUser: function currentUser(state) {
       return state.currentUser.currentUser;
+    },
+    pairingUser: function pairingUser(state) {
+      return state.pairingUser.pairingUser;
     }
-  }))
+  })),
+  watch: {
+    currentUser: function currentUser(newUser, oldUser) {
+      var _this2 = this;
+
+      if (newUser && newUser.status == 'WANT_TO_CONNECT') {
+        var fetchPairedUserUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/pair/find");
+        var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+        if (!token) {
+          return this.$router.replace('/login');
+        }
+
+        var config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        };
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchPairedUserUri, config).then(function (res) {
+          if (res.status == 200) {
+            if ('msg' in res.data) {// TODO: case when no one to pair found
+            } else if ('id' in res.data) {
+              _this2.setPairingUser(res.data);
+            }
+          } else {
+            // TODO: display error and navigate somewhere
+            _this2.error = 'no data fetched';
+          }
+        })["catch"](function (err) {
+          // TODO: display error and navigate somewhere
+          _this2.error = 'no data fetched';
+        });
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -38035,7 +38075,11 @@ var render = function() {
     _c("h1", [_vm._v("Dashboard")]),
     _vm._v(" "),
     _vm.currentUser
-      ? _c("p", [_vm._v(_vm._s(_vm.currentUser.name))])
+      ? _c("p", [_vm._v("Current email: " + _vm._s(_vm.currentUser.email))])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.pairingUser
+      ? _c("p", [_vm._v("Pairing email: " + _vm._s(_vm.pairingUser.email))])
       : _vm._e(),
     _vm._v(" "),
     _vm.error
@@ -55127,6 +55171,8 @@ var router = new VueRouter({
 }); // import Vuex modules
 
 var currentUserModule = __webpack_require__(/*! ./store/modules/currentUser */ "./resources/js/store/modules/currentUser.js");
+
+var pairingUserModule = __webpack_require__(/*! ./store/modules/pairingUser */ "./resources/js/store/modules/pairingUser.js");
 /**
  * Implementing Vuex store
  */
@@ -55134,7 +55180,8 @@ var currentUserModule = __webpack_require__(/*! ./store/modules/currentUser */ "
 
 var store = new Vuex.Store({
   modules: {
-    currentUser: currentUserModule
+    currentUser: currentUserModule,
+    pairingUser: pairingUserModule
   },
   state: {
     messages: ['first message']
@@ -55872,6 +55919,35 @@ module.exports = {
     setCurrentUser: function setCurrentUser(_ref, userData) {
       var commit = _ref.commit;
       commit(SET_CURRENT_USER, userData);
+    }
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/pairingUser.js":
+/*!***************************************************!*\
+  !*** ./resources/js/store/modules/pairingUser.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var SET_PAIRING_USER = 'SET_PAIRING_USER';
+module.exports = {
+  state: function state() {
+    return {
+      pairingUser: null
+    };
+  },
+  mutations: {
+    SET_PAIRING_USER: function SET_PAIRING_USER(state, userData) {
+      state.pairingUser = userData;
+    }
+  },
+  actions: {
+    setPairingUser: function setPairingUser(_ref, userData) {
+      var commit = _ref.commit;
+      commit(SET_PAIRING_USER, userData);
     }
   }
 };

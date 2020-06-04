@@ -2,7 +2,9 @@
     <div>
         <h1>Dashboard</h1>
 
-        <p v-if="currentUser">{{ currentUser.name }}</p>
+        <p v-if="currentUser">Current email: {{ currentUser.email }}</p>
+
+        <p v-if="pairingUser">Pairing email: {{ pairingUser.email }}</p>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
     </div>
@@ -58,14 +60,54 @@
 
         methods: {
             ...mapActions([
-                'setCurrentUser'
+                'setCurrentUser',
+                'setPairingUser'
             ])
         },
 
         computed: {
             ...mapState({
-                currentUser: state => state.currentUser.currentUser
+                currentUser: state => state.currentUser.currentUser,
+                pairingUser: state => state.pairingUser.pairingUser
             })
+        },
+
+        watch: {
+            currentUser: function(newUser, oldUser) {
+                if (newUser && (newUser.status == 'WANT_TO_CONNECT')) {
+                    const fetchPairedUserUri = `${API_BASE_URI}/pair/find`;
+
+                    const token = localStorage.getItem(CR_USER_TOKEN);
+                    if (!token) {
+                        return this.$router.replace('/login');
+                    }
+
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
+                        }
+                    };
+
+                    axios.get(fetchPairedUserUri, config)
+                        .then(res => {
+                            if (res.status == 200) {
+                                if ('msg' in res.data) {
+                                    // TODO: case when no one to pair found
+                                } else if ('id' in res.data) {
+                                    this.setPairingUser(res.data);
+                                }
+                            } else {
+                                // TODO: display error and navigate somewhere
+                                this.error = 'no data fetched';
+                            }
+                        })
+                        .catch(err => {
+                            // TODO: display error and navigate somewhere
+                            this.error = 'no data fetched';
+                        });
+                }
+            }
         }
     }
 </script>
