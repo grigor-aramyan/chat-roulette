@@ -34,3 +34,4 @@ Route::group([
 });
 
 Route::get('pair/find', 'FindPairController')->middleware('auth:api');
+Route::post('mode/update', 'UpdateUserModeController')->middleware('auth:api');
