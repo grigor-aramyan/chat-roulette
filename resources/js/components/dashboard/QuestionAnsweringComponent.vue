@@ -143,6 +143,11 @@
                     this.intervalId = null;
 
                     this.error = '';
+
+                    // TODO: send answers over the firebase RD
+                    // wait for pairing user answers
+                    // so you can evaluate each other
+                    // and decide whether want to pair or not
                     console.log('pairing');
                 }
             }
