@@ -8,21 +8,28 @@
             </li>
         </ul>
 
+        <p v-if="error" style="color:red;">{{ error }}</p>
+
         <button @click="reject" class="btn btn-danger">Reject</button>
         <button @click="connect" class="btn btn-info">Connect</button>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
     import {
         mapState,
         mapActions
     } from 'vuex';
+    import {
+        API_BASE_URI,
+        CR_USER_TOKEN
+    } from '../../statics';
 
     export default {
         data() {
             return {
-                
+                error: ''
             }
         },
 
@@ -34,22 +41,84 @@
 
         methods: {
             reject() {
-                // TODO axios call to set user status to IDLE
-                // ###
+                
+                const updateMyModeUri = `${API_BASE_URI}/mode/update`;
 
-                // TODO firebase RD call to notify pairing user about rejection
+                const token = localStorage.getItem(CR_USER_TOKEN);
+                if (!token) {
+                    return this.$router.replace('/login');
+                }
 
-                this.removePairingUser();
-                this.removePairingUserAnswers();
-                this.$emit('reject-pairing-user');
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                };
+
+                const payload = {
+                    mode: 'IDLE'
+                };
+
+                axios.post(updateMyModeUri, payload, config)
+                    .then(res => {
+                        if (res.status == 200) {
+                            const updatedMode = res.data.mode;
+
+                            // TODO dispatch vuex action to update current user mode in store
+
+                            // TODO firebase RD call to notify pairing user about rejection
+
+                            this.removePairingUser();
+                            this.removePairingUserAnswers();
+                            this.$emit('reject-pairing-user');
+                        } else {
+                            this.error = 'something weird happened';
+                        }
+                    })
+                    .catch(err => {
+                        this.error = err.message;
+                    });
+
             },
             connect() {
-                // TODO axios call to set user status to CONNECTED
-                // ###
+                
+                const updateMyModeUri = `${API_BASE_URI}/mode/update`;
 
-                // TODO firebase RD call to notify pairing user about connection
+                const token = localStorage.getItem(CR_USER_TOKEN);
+                if (!token) {
+                    return this.$router.replace('/login');
+                }
 
-                this.$emit('connect-pairing-user');
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                };
+
+                const payload = {
+                    mode: 'CONNECTED'
+                };
+
+                axios.post(updateMyModeUri, payload, config)
+                    .then(res => {
+                        if (res.status == 200) {
+                            const updatedMode = res.data.mode;
+
+                            // TODO dispatch vuex action to update current user mode in store
+
+                            // TODO firebase RD call to notify pairing user about connection
+
+                            this.$emit('connect-pairing-user');
+                        } else {
+                            this.error = 'something weird happened';
+                        }
+                    })
+                    .catch(err => {
+                        this.error = err.message;
+                    });
+
             },
             ...mapActions([
                 'removePairingUser',
