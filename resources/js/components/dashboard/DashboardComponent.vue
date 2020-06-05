@@ -6,11 +6,20 @@
 
         <p v-if="pairingUser">Pairing email: {{ pairingUser.email }}</p>
 
-        <div v-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
+        <div v-if="currentSubPage == 'DEFAULT_DASHBOARD'">
+            <h1 style="color:yellow;">Default dashboard</h1>
+        </div>
+        <div v-else-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
             <question-answering-component></question-answering-component>
         </div>
         <div v-else-if="currentSubPage == 'ANSWERS_SUBPAGE'">
-            <answers-viewing-component></answers-viewing-component>
+            <answers-viewing-component
+                @reject-pairing-user="rejectPairingUser"
+                @connect-pairing-user="connectPairingUser">
+            </answers-viewing-component>
+        </div>
+        <div v-else-if="currentSubPage == 'CHAT_SUBPAGE'">
+            <h1 style="color:green;">CHAT_SUBPAGE</h1>
         </div>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
@@ -29,8 +38,10 @@
     } from '../../statics';
 
     // constants
+    const DEFAULT_DASHBOARD = 'DEFAULT_DASHBOARD';
     const QUESTIONS_SUBPAGE = 'QUESTIONS_SUBPAGE';
     const ANSWERS_SUBPAGE = 'ANSWERS_SUBPAGE';
+    const CHAT_SUBPAGE = 'CHAT_SUBPAGE';
 
     export default {
         mounted() {
@@ -76,6 +87,12 @@
         },
 
         methods: {
+            rejectPairingUser() {
+                this.currentSubPage = DEFAULT_DASHBOARD;
+            },
+            connectPairingUser() {
+                this.currentSubPage = CHAT_SUBPAGE;
+            },
             ...mapActions([
                 'setCurrentUser',
                 'setPairingUser'

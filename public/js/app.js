@@ -2052,6 +2052,15 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
 //
 //
 //
@@ -2067,19 +2076,29 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
-      messages: [{
-        id: 1,
-        msg: 'message1'
-      }, {
-        id: 2,
-        msg: 'message2'
-      }, {
-        id: 3,
-        msg: 'message3'
-      }]
-    };
-  }
+    return {};
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+    pairingUserAnswers: function pairingUserAnswers(state) {
+      return state.pairingUser.pairingUserAnswers;
+    }
+  })),
+  methods: _objectSpread({
+    reject: function reject() {
+      // TODO axios call to set user status to IDLE
+      // ###
+      // TODO firebase RD call to notify pairing user about rejection
+      this.removePairingUser();
+      this.removePairingUserAnswers();
+      this.$emit('reject-pairing-user');
+    },
+    connect: function connect() {
+      // TODO axios call to set user status to CONNECTED
+      // ###
+      // TODO firebase RD call to notify pairing user about connection
+      this.$emit('connect-pairing-user');
+    }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['removePairingUser', 'removePairingUserAnswers']))
 });
 
 /***/ }),
@@ -2122,12 +2141,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
  // constants
 
+var DEFAULT_DASHBOARD = 'DEFAULT_DASHBOARD';
 var QUESTIONS_SUBPAGE = 'QUESTIONS_SUBPAGE';
 var ANSWERS_SUBPAGE = 'ANSWERS_SUBPAGE';
+var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -2169,7 +2199,14 @@ var ANSWERS_SUBPAGE = 'ANSWERS_SUBPAGE';
       error: ''
     };
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser'])),
+  methods: _objectSpread({
+    rejectPairingUser: function rejectPairingUser() {
+      this.currentSubPage = DEFAULT_DASHBOARD;
+    },
+    connectPairingUser: function connectPairingUser() {
+      this.currentSubPage = CHAT_SUBPAGE;
+    }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser'])),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
     currentUser: function currentUser(state) {
       return state.currentUser.currentUser;
@@ -38466,13 +38503,21 @@ var render = function() {
     _vm._v(" "),
     _c(
       "ul",
-      _vm._l(_vm.messages, function(message) {
-        return _c("li", { key: message.id }, [
-          _vm._v("\n            " + _vm._s(message.msg) + "\n        ")
+      _vm._l(_vm.pairingUserAnswers, function(answer) {
+        return _c("li", { key: answer.id }, [
+          _vm._v("\n            " + _vm._s(answer.msg) + "\n        ")
         ])
       }),
       0
-    )
+    ),
+    _vm._v(" "),
+    _c("button", { staticClass: "btn btn-danger", on: { click: _vm.reject } }, [
+      _vm._v("Reject")
+    ]),
+    _vm._v(" "),
+    _c("button", { staticClass: "btn btn-info", on: { click: _vm.connect } }, [
+      _vm._v("Connect")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -38508,10 +38553,33 @@ var render = function() {
       ? _c("p", [_vm._v("Pairing email: " + _vm._s(_vm.pairingUser.email))])
       : _vm._e(),
     _vm._v(" "),
-    _vm.currentSubPage == "QUESTIONS_SUBPAGE"
+    _vm.currentSubPage == "DEFAULT_DASHBOARD"
+      ? _c("div", [
+          _c("h1", { staticStyle: { color: "yellow" } }, [
+            _vm._v("Default dashboard")
+          ])
+        ])
+      : _vm.currentSubPage == "QUESTIONS_SUBPAGE"
       ? _c("div", [_c("question-answering-component")], 1)
       : _vm.currentSubPage == "ANSWERS_SUBPAGE"
-      ? _c("div", [_c("answers-viewing-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("answers-viewing-component", {
+              on: {
+                "reject-pairing-user": _vm.rejectPairingUser,
+                "connect-pairing-user": _vm.connectPairingUser
+              }
+            })
+          ],
+          1
+        )
+      : _vm.currentSubPage == "CHAT_SUBPAGE"
+      ? _c("div", [
+          _c("h1", { staticStyle: { color: "green" } }, [
+            _vm._v("CHAT_SUBPAGE")
+          ])
+        ])
       : _vm._e(),
     _vm._v(" "),
     _vm.error
@@ -56514,21 +56582,55 @@ module.exports = {
 /***/ (function(module, exports) {
 
 var SET_PAIRING_USER = 'SET_PAIRING_USER';
+var SET_PAIRING_USER_ANSWERS = 'SET_PAIRING_USER_ANSWERS';
+var REMOVE_PAIRING_USER_ANSWERS = 'REMOVE_PAIRING_USER_ANSWERS';
+var REMOVE_PAIRING_USER = 'REMOVE_PAIRING_USER';
 module.exports = {
   state: function state() {
     return {
-      pairingUser: null
+      pairingUser: null,
+      pairingUserAnswers: [{
+        id: 1,
+        msg: 'message1 from vuex'
+      }, {
+        id: 2,
+        msg: 'message2 from vuex'
+      }, {
+        id: 3,
+        msg: 'message3 from vuex'
+      }]
     };
   },
   mutations: {
     SET_PAIRING_USER: function SET_PAIRING_USER(state, userData) {
       state.pairingUser = userData;
+    },
+    SET_PAIRING_USER_ANSWERS: function SET_PAIRING_USER_ANSWERS(state, answers) {
+      state.pairingUserAnswers = answers;
+    },
+    REMOVE_PAIRING_USER_ANSWERS: function REMOVE_PAIRING_USER_ANSWERS(state) {
+      state.pairingUserAnswers = null;
+    },
+    REMOVE_PAIRING_USER: function REMOVE_PAIRING_USER(state) {
+      state.pairingUser = null;
     }
   },
   actions: {
     setPairingUser: function setPairingUser(_ref, userData) {
       var commit = _ref.commit;
       commit(SET_PAIRING_USER, userData);
+    },
+    setPairingUserAnswers: function setPairingUserAnswers(_ref2, answers) {
+      var commit = _ref2.commit;
+      commit(SET_PAIRING_USER_ANSWERS, answers);
+    },
+    removePairingUserAnswers: function removePairingUserAnswers(_ref3) {
+      var commit = _ref3.commit;
+      commit(REMOVE_PAIRING_USER_ANSWERS);
+    },
+    removePairingUser: function removePairingUser(_ref4) {
+      var commit = _ref4.commit;
+      commit(REMOVE_PAIRING_USER);
     }
   }
 };
