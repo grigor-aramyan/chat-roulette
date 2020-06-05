@@ -26,7 +26,7 @@
             <button @click="pair">Pair with user</button>
         </div>
         <div v-else-if="currentQuestion == 'END_SCREEN'">
-            <p style="color:purple;">End screen</p>
+            <p style="color:purple;">Wait a bit, please! Your pair still answering to questions)</p>
         </div>
 
         <p v-if="error" style="color:red;">{{ error }}</p>

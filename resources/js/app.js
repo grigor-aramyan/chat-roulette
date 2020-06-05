@@ -23,6 +23,7 @@ const ThreeQsComponent = require('./components/registration/ThreeQsComponent.vue
 const CurrentStatusComponent = require('./components/registration/CurrentStatusComponent.vue').default;
 const DashboardComponent = require('./components/dashboard/DashboardComponent.vue').default;
 const QuestionAnsweringComponent = require('./components/dashboard/QuestionAnsweringComponent.vue').default;
+const AnswersViewingComponent = require('./components/dashboard/AnswersViewingComponent.vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -45,6 +46,7 @@ Vue.component('three-qs-component', ThreeQsComponent);
 Vue.component('current-status-component', CurrentStatusComponent);
 Vue.component('dashboard-component', DashboardComponent);
 Vue.component('question-answering-component', QuestionAnsweringComponent);
+Vue.component('answers-viewing-component', AnswersViewingComponent);
 
 /**
  * Creating routes for Vue SPA

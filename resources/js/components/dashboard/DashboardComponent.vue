@@ -9,6 +9,9 @@
         <div v-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
             <question-answering-component></question-answering-component>
         </div>
+        <div v-else-if="currentSubPage == 'ANSWERS_SUBPAGE'">
+            <answers-viewing-component></answers-viewing-component>
+        </div>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
     </div>
@@ -27,6 +30,7 @@
 
     // constants
     const QUESTIONS_SUBPAGE = 'QUESTIONS_SUBPAGE';
+    const ANSWERS_SUBPAGE = 'ANSWERS_SUBPAGE';
 
     export default {
         mounted() {
@@ -54,14 +58,19 @@
                     }
                 })
                 .catch(err => {
-                    // TODO: display error and navigate somewhere
-                    this.error = 'no data fetched';
+                    if (err.response.status == 401) {
+                        localStorage.removeItem(CR_USER_TOKEN);
+                        this.$router.replace('/login');
+                    } else {
+                        // TODO: display error and navigate somewhere
+                        this.error = 'no data fetched';
+                    }
                 });
         },
 
         data() {
             return {
-                currentSubPage: QUESTIONS_SUBPAGE,
+                currentSubPage: ANSWERS_SUBPAGE,
                 error: ''
             }
         },
