@@ -2114,8 +2114,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, config).then(function (res) {
         if (res.status == 200) {
-          var updatedMode = res.data.mode; // TODO dispatch vuex action to update current user mode in store
-          // TODO firebase RD call to notify pairing user about rejection
+          var updatedMode = res.data.mode;
+
+          _this.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about rejection
+
 
           _this.removePairingUser();
 
@@ -2150,8 +2152,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, config).then(function (res) {
         if (res.status == 200) {
-          var updatedMode = res.data.mode; // TODO dispatch vuex action to update current user mode in store
-          // TODO firebase RD call to notify pairing user about connection
+          var updatedMode = res.data.mode;
+
+          _this2.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about connection
+
 
           _this2.$emit('connect-pairing-user');
         } else {
@@ -2161,7 +2165,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.error = err.message;
       });
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['removePairingUser', 'removePairingUserAnswers']))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode']))
 });
 
 /***/ }),
@@ -56620,6 +56624,7 @@ var CR_USER_TOKEN = 'CR_USER_TOKEN';
 /***/ (function(module, exports) {
 
 var SET_CURRENT_USER = 'SET_CURRENT_USER';
+var SET_CURRENT_USER_MODE = 'SET_CURRENT_USER_MODE';
 module.exports = {
   state: function state() {
     return {
@@ -56629,12 +56634,21 @@ module.exports = {
   mutations: {
     SET_CURRENT_USER: function SET_CURRENT_USER(state, userData) {
       state.currentUser = userData;
+    },
+    SET_CURRENT_USER_MODE: function SET_CURRENT_USER_MODE(state, mode) {
+      if (state.currentUser) {
+        state.currentUser.mode = mode;
+      }
     }
   },
   actions: {
     setCurrentUser: function setCurrentUser(_ref, userData) {
       var commit = _ref.commit;
       commit(SET_CURRENT_USER, userData);
+    },
+    setCurrentUserMode: function setCurrentUserMode(_ref2, mode) {
+      var commit = _ref2.commit;
+      commit(SET_CURRENT_USER_MODE, mode);
     }
   }
 };

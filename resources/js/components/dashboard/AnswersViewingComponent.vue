@@ -65,7 +65,7 @@
                         if (res.status == 200) {
                             const updatedMode = res.data.mode;
 
-                            // TODO dispatch vuex action to update current user mode in store
+                            this.setCurrentUserMode(updatedMode);
 
                             // TODO firebase RD call to notify pairing user about rejection
 
@@ -106,7 +106,7 @@
                         if (res.status == 200) {
                             const updatedMode = res.data.mode;
 
-                            // TODO dispatch vuex action to update current user mode in store
+                            this.setCurrentUserMode(updatedMode);
 
                             // TODO firebase RD call to notify pairing user about connection
 
@@ -122,7 +122,8 @@
             },
             ...mapActions([
                 'removePairingUser',
-                'removePairingUserAnswers'
+                'removePairingUserAnswers',
+                'setCurrentUserMode'
             ])
         }
     }
