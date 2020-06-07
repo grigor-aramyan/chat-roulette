@@ -19,7 +19,7 @@
             </answers-viewing-component>
         </div>
         <div v-else-if="currentSubPage == 'CHAT_SUBPAGE'">
-            <h1 style="color:green;">CHAT_SUBPAGE</h1>
+            <messaging-component></messaging-component>
         </div>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
