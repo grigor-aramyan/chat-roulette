@@ -35,3 +35,8 @@ Route::group([
 
 Route::get('pair/find', 'FindPairController')->middleware('auth:api');
 Route::post('mode/update', 'UpdateUserModeController')->middleware('auth:api');
+
+Route::apiResource('messages', 'MessageController')->except([
+    'index'
+])->middleware('auth:api');
+Route::get('messages/fetch/{pairing_user_id}', 'MessageController@fetch')->middleware('auth:api');
