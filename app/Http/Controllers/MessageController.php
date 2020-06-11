@@ -41,16 +41,6 @@ class MessageController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -72,7 +62,22 @@ class MessageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $message = Message::find($id);
+        if (!$message) {
+            return response()->json([ 'msg' => 'message not found' ], 404);
+        }
+
+        $current_user = auth()->user();
+        if ($current_user->id != $message->user_id) {
+            return response()->json([ 'msg' => 'only author of message can delete it' ], 400);
+        }
+
+        $destroyed = Message::destroy($id);
+        if ($destroyed > 0) {
+            return response()->json([ 'msg' => 'destroyed' ], 200);
+        } else {
+            return response()->json([ 'msg' => 'some error occured' ], 500);
+        }
     }
 
 
