@@ -17,7 +17,28 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $current_user = auth()->user();
+
+        $addressed_to = $request->addressed_to;
+
+        $addressed_to_user = User::find($addressed_to);
+        if (!$addressed_to_user) {
+            return response()->json([ 'msg' => 'no recipient exists' ], 400);
+        } else if (!$request->content) {
+            return response()->json([ 'msg' => 'content required' ], 400);
+        }
+
+        $created = $current_user->messages()->create([
+            'content' => $request->content,
+            'addressed_to' => $request->addressed_to
+        ]);
+
+        if ($created) {
+            return response()->json($created, 201);
+        } else {
+            return response()->json([ 'msg' => 'some error occured' ], 500);
+        }
+
     }
 
     /**
