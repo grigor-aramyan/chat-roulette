@@ -2336,18 +2336,97 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _statics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../statics */ "./resources/js/statics.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      currentMessage: '',
       error: ''
     };
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    pairingUser: function pairingUser(state) {
+      return state.pairingUser.pairingUser;
+    },
+    chatMessages: function chatMessages(state) {
+      return state.pairingUser.chatMessages;
+    }
+  })),
+  methods: _objectSpread({
+    send: function send() {
+      var _this = this;
+
+      if (this.currentMessage) {
+        var storeMessageUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/messages");
+        var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+        if (!token) {
+          return this.$router.replace('/login');
+        }
+
+        var config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        };
+        var payload = {
+          content: this.currentMessage,
+          addressed_to: this.pairingUser.id
+        };
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(storeMessageUri, payload, config).then(function (res) {
+          if (res.status == 201) {
+            _this.addNewChatMessage(res.data);
+
+            _this.error = '';
+            _this.currentMessage = '';
+          } else {
+            _this.error = 'something weird happened. Try one more time, please';
+          }
+        })["catch"](function (err) {
+          if (err.response.status == 400) {
+            _this.error = err.response.data.msg;
+          } else {
+            _this.error = err.message;
+          }
+        });
+      } else {
+        this.error = 'can\'t send empty message';
+      }
+    }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['addNewChatMessage']))
 });
 
 /***/ }),
@@ -38701,16 +38780,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _c("h1", [_vm._v("Messaging")]),
+    _vm._v(" "),
+    _vm.chatMessages
+      ? _c("div", [
+          _c(
+            "ul",
+            _vm._l(_vm.chatMessages, function(msg) {
+              return _c("li", { key: msg.id }, [
+                _vm._v(
+                  "\n                " + _vm._s(msg.content) + "\n            "
+                )
+              ])
+            }),
+            0
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.currentMessage,
+          expression: "currentMessage"
+        }
+      ],
+      attrs: { placeholder: "Type a message to send..." },
+      domProps: { value: _vm.currentMessage },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.currentMessage = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("button", { staticClass: "btn btn-success", on: { click: _vm.send } }, [
+      _vm._v("Send")
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.error
+      ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
+      : _vm._e()
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [_c("h1", [_vm._v("Messaging")])])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -56790,6 +56911,7 @@ var SET_PAIRING_USER = 'SET_PAIRING_USER';
 var SET_PAIRING_USER_ANSWERS = 'SET_PAIRING_USER_ANSWERS';
 var REMOVE_PAIRING_USER_ANSWERS = 'REMOVE_PAIRING_USER_ANSWERS';
 var REMOVE_PAIRING_USER = 'REMOVE_PAIRING_USER';
+var ADD_NEW_CHAT_MESSAGE = 'ADD_NEW_CHAT_MESSAGE';
 module.exports = {
   state: function state() {
     return {
@@ -56803,7 +56925,8 @@ module.exports = {
       }, {
         id: 3,
         msg: 'message3 from vuex'
-      }]
+      }],
+      chatMessages: null
     };
   },
   mutations: {
@@ -56818,6 +56941,14 @@ module.exports = {
     },
     REMOVE_PAIRING_USER: function REMOVE_PAIRING_USER(state) {
       state.pairingUser = null;
+    },
+    ADD_NEW_CHAT_MESSAGE: function ADD_NEW_CHAT_MESSAGE(state, newMessage) {
+      if (state.chatMessages) {
+        state.chatMessages.push(newMessage);
+      } else {
+        state.chatMessages = [];
+        state.chatMessages.push(newMessage);
+      }
     }
   },
   actions: {
@@ -56836,6 +56967,10 @@ module.exports = {
     removePairingUser: function removePairingUser(_ref4) {
       var commit = _ref4.commit;
       commit(REMOVE_PAIRING_USER);
+    },
+    addNewChatMessage: function addNewChatMessage(_ref5, newMessage) {
+      var commit = _ref5.commit;
+      commit(ADD_NEW_CHAT_MESSAGE, newMessage);
     }
   }
 };
