@@ -2366,12 +2366,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
+var MESSAGING = 'MESSAGING';
+var END_OF_MESSAGING = 'END_OF_MESSAGING';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      section: MESSAGING,
       currentMessage: '',
       error: ''
     };
@@ -2385,6 +2404,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   })),
   methods: _objectSpread({
+    endChatting: function endChatting() {
+      this.section = END_OF_MESSAGING;
+    },
+    becomeFriends: function becomeFriends() {
+      console.log('become friends');
+    },
+    stayAnonimous: function stayAnonimous() {
+      console.log('stay anonym');
+    },
     send: function send() {
       var _this = this;
 
@@ -38783,48 +38811,86 @@ var render = function() {
   return _c("div", [
     _c("h1", [_vm._v("Messaging")]),
     _vm._v(" "),
-    _vm.chatMessages
+    _vm.section == "MESSAGING"
       ? _c("div", [
-          _c(
-            "ul",
-            _vm._l(_vm.chatMessages, function(msg) {
-              return _c("li", { key: msg.id }, [
-                _vm._v(
-                  "\n                " + _vm._s(msg.content) + "\n            "
+          _vm.chatMessages
+            ? _c("div", [
+                _c(
+                  "ul",
+                  _vm._l(_vm.chatMessages, function(msg) {
+                    return _c("li", { key: msg.id }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(msg.content) +
+                          "\n                "
+                      )
+                    ])
+                  }),
+                  0
                 )
               ])
-            }),
-            0
-          )
+            : _vm._e(),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.currentMessage,
+                expression: "currentMessage"
+              }
+            ],
+            attrs: { placeholder: "Type a message to send..." },
+            domProps: { value: _vm.currentMessage },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.currentMessage = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-success", on: { click: _vm.send } },
+            [_vm._v("Send")]
+          ),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c("button", { on: { click: _vm.endChatting } }, [
+            _vm._v("Close chat")
+          ])
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.currentMessage,
-          expression: "currentMessage"
-        }
-      ],
-      attrs: { placeholder: "Type a message to send..." },
-      domProps: { value: _vm.currentMessage },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
-          }
-          _vm.currentMessage = $event.target.value
-        }
-      }
-    }),
-    _vm._v(" "),
-    _c("button", { staticClass: "btn btn-success", on: { click: _vm.send } }, [
-      _vm._v("Send")
-    ]),
-    _vm._v(" "),
-    _c("br"),
+    _vm.section == "END_OF_MESSAGING"
+      ? _c("div", [
+          _c("div", [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                on: { click: _vm.becomeFriends }
+              },
+              [_vm._v("Become friends")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                on: { click: _vm.stayAnonimous }
+              },
+              [_vm._v("Stay anonymous")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("br")
+        ])
+      : _vm._e(),
     _vm._v(" "),
     _vm.error
       ? _c("p", { staticStyle: { color: "red" } }, [_vm._v(_vm._s(_vm.error))])
