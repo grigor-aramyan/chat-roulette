@@ -103,6 +103,40 @@ class MessageController extends Controller
         }
     }
 
+    /**
+     * Remove chat messages between current user and user specified with id in param.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete_all($id)
+    {
+        $current_user = auth()->user();
+
+        $paired_user = User::find($id);
+        if (!$paired_user) {
+            return response()->json([ 'msg' => 'user with specified id not found' ], 404);
+        }
+
+        $authored_messages = Message::whereRaw('user_id = ? and addressed_to = ?', array($current_user->id, $id))->get();
+        $paired_messages = Message::whereRaw('user_id = ? and addressed_to = ?', array($id, $current_user->id))->get();
+
+        $pending_ids = [];
+        foreach ($authored_messages as $am) {
+            array_push($pending_ids, $am->id);
+        }
+        foreach ($paired_messages as $pm) {
+            array_push($pending_ids, $pm->id);
+        }
+
+        $deleted = Message::destroy($pending_ids);
+        if ($deleted >= 0) {
+            return response()->json([ 'msg' => 'deleted' ]);
+        } else {
+            return response()->json([ 'msg' => 'weird error occurred' ], 500);
+        }
+        
+    }
 
     /**
      * Display a listing of the current and pairing users messages.

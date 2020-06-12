@@ -101,6 +101,9 @@
                             if (res.status == 201) {
                                 this.addNewChatMessage(res.data);
 
+                                // TODO: send added message to firebase RD
+                                // so paired user can receive it realtime too
+
                                 this.error = '';
                                 this.currentMessage = '';
                             } else {

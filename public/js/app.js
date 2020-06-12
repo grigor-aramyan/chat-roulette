@@ -2436,7 +2436,9 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         };
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(storeMessageUri, payload, config).then(function (res) {
           if (res.status == 201) {
-            _this.addNewChatMessage(res.data);
+            _this.addNewChatMessage(res.data); // TODO: send added message to firebase RD
+            // so paired user can receive it realtime too
+
 
             _this.error = '';
             _this.currentMessage = '';
