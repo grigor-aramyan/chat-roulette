@@ -43,3 +43,4 @@ Route::get('messages/fetch/{pairing_user_id}', 'MessageController@fetch')->middl
 Route::delete('messages/all/{id}', 'MessageController@delete_all')->middleware('auth:api');
 
 Route::post('connections', 'UserConnectionController@store')->middleware('auth:api');
+Route::get('connections', 'UserConnectionController@index')->middleware('auth:api');

@@ -47,7 +47,30 @@ class UserConnectionController extends Controller
     }
 
 
-    // TODO: endpoint to return connected user ids
+    /**
+     * return connected user ids
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $current_user = auth()->user();
+
+        $current_user_connections = UserConnection::whereRaw('connected_from = ? or connected_to = ?', array($current_user->id, $current_user->id))->get();
+        
+        $connection_ids = array();
+        foreach ($current_user_connections as $cuc) {
+            if ($cuc->connected_from == $current_user->id) {
+                array_push($connection_ids, $cuc->connected_to);
+            } else {
+                array_push($connection_ids, $cuc->connected_from);
+            }
+        }
+
+        return response()->json([ 'connections' => $connection_ids ]);
+    }
+
 
     /**
      * check if users with submitted ids are connected
