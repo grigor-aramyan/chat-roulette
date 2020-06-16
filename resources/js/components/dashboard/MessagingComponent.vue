@@ -70,7 +70,42 @@
                 this.section = END_OF_MESSAGING;
             },
             becomeFriends() {
-                console.log('become friends');
+                const becomeFriendsUri = `${API_BASE_URI}/connections`;
+
+                const token = localStorage.getItem(CR_USER_TOKEN);
+                if (!token) {
+                    return this.$router.replace('/login');
+                }
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                };
+
+                const payload = {
+                    connected_to: this.pairingUser.id
+                };
+
+                axios.post(becomeFriendsUri, payload, config)
+                    .then(res => {
+                        if (res.status == 201) {
+                            this.addConnection(this.pairingUser.id);
+
+                            // TODO: send notif to firebase RD
+                            // so paired user can know you become friends
+
+                            this.error = '';
+                        } else if (res.status == 200) {
+                            this.error = 'already connected. Try to refresh page, please';
+                        } else {
+                            this.error = 'something weird happened. Try one more time, please';
+                        }
+                    })
+                    .catch(err => {
+                        this.error = err.message;
+                    });
             },
             stayAnonimous() {
                 console.log('stay anonym');
@@ -123,7 +158,8 @@
                 }
             },
             ...mapActions([
-                'addNewChatMessage'
+                'addNewChatMessage',
+                'addConnection'
             ])
         }
     }
