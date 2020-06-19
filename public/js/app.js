@@ -2273,7 +2273,7 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
     connectPairingUser: function connectPairingUser() {
       this.currentSubPage = CHAT_SUBPAGE;
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser'])),
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser', 'setCurrentUserMode'])),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
     currentUser: function currentUser(state) {
       return state.currentUser.currentUser;
@@ -2302,7 +2302,9 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
         };
         axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchPairedUserUri, config).then(function (res) {
           if (res.status == 200) {
-            if ('msg' in res.data) {// TODO: case when no one to pair found
+            if ('msg' in res.data) {
+              // TODO: case when no one to pair found
+              _this2.error = 'Sorry, no one to pair with now. Stay tuned, please!';
             } else if ('id' in res.data) {
               // TODO: got pairing user
               // dispatch event to firebase RD, so pairing user
@@ -2310,7 +2312,16 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
               // this user questions as well
               // set mode to 'pending' from pairing user side
               // lister to RD events from app.js (?)
+              window.RD.ref('pairedUser').set({
+                pairedFrom: _this2.currentUser.id,
+                pairedTo: res.data.id
+              });
+
               _this2.setPairingUser(res.data);
+
+              _this2.setCurrentUserMode('PENDING');
+
+              _this2.currentSubPage = QUESTIONS_SUBPAGE;
             }
           } else {
             // TODO: display error and navigate somewhere
@@ -2318,7 +2329,21 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
           }
         })["catch"](function (err) {
           // TODO: display error and navigate somewhere
-          _this2.error = 'no data fetched';
+          // this.error = 'no data fetched';
+          _this2.error = err.message;
+        });
+        window.RD.ref('pairedUser').on('value', function (snapshot) {
+          var snapData = snapshot.val();
+
+          if (_this2.currentUser) {
+            if (snapData.pairedTo == _this2.currentUser.id && _this2.currentUser.mode == 'IDLE') {// TODO: get user data with supplied id and
+              // set it as paired user
+              // set both users mode as pending in db
+              // set this user mode as pending in vuex module
+              // set current sub page to answering questions
+              // TODO: create user controller to get user data with supplied id
+            }
+          }
         });
       }
     }
@@ -2408,13 +2433,45 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
       this.section = END_OF_MESSAGING;
     },
     becomeFriends: function becomeFriends() {
-      console.log('become friends');
+      var _this = this;
+
+      var becomeFriendsUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/connections");
+      var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+      if (!token) {
+        return this.$router.replace('/login');
+      }
+
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      };
+      var payload = {
+        connected_to: this.pairingUser.id
+      };
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(becomeFriendsUri, payload, config).then(function (res) {
+        if (res.status == 201) {
+          _this.addConnection(_this.pairingUser.id); // TODO: send notif to firebase RD
+          // so paired user can know you become friends
+
+
+          _this.error = '';
+        } else if (res.status == 200) {
+          _this.error = 'already connected. Try to refresh page, please';
+        } else {
+          _this.error = 'something weird happened. Try one more time, please';
+        }
+      })["catch"](function (err) {
+        _this.error = err.message;
+      });
     },
     stayAnonimous: function stayAnonimous() {
       console.log('stay anonym');
     },
     send: function send() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.currentMessage) {
         var storeMessageUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/messages");
@@ -2436,27 +2493,27 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         };
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(storeMessageUri, payload, config).then(function (res) {
           if (res.status == 201) {
-            _this.addNewChatMessage(res.data); // TODO: send added message to firebase RD
+            _this2.addNewChatMessage(res.data); // TODO: send added message to firebase RD
             // so paired user can receive it realtime too
 
 
-            _this.error = '';
-            _this.currentMessage = '';
+            _this2.error = '';
+            _this2.currentMessage = '';
           } else {
-            _this.error = 'something weird happened. Try one more time, please';
+            _this2.error = 'something weird happened. Try one more time, please';
           }
         })["catch"](function (err) {
           if (err.response.status == 400) {
-            _this.error = err.response.data.msg;
+            _this2.error = err.response.data.msg;
           } else {
-            _this.error = err.message;
+            _this2.error = err.message;
           }
         });
       } else {
         this.error = 'can\'t send empty message';
       }
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['addNewChatMessage']))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['addNewChatMessage', 'addConnection']))
 });
 
 /***/ }),
@@ -56938,10 +56995,13 @@ var CR_USER_TOKEN = 'CR_USER_TOKEN';
 
 var SET_CURRENT_USER = 'SET_CURRENT_USER';
 var SET_CURRENT_USER_MODE = 'SET_CURRENT_USER_MODE';
+var ADD_FETCHED_CONNECTIONS = 'ADD_FETCHED_CONNECTIONS';
+var ADD_CONNECTION = 'ADD_CONNECTION';
 module.exports = {
   state: function state() {
     return {
-      currentUser: null
+      currentUser: null,
+      connections: null
     };
   },
   mutations: {
@@ -56952,6 +57012,16 @@ module.exports = {
       if (state.currentUser) {
         state.currentUser.mode = mode;
       }
+    },
+    ADD_FETCHED_CONNECTIONS: function ADD_FETCHED_CONNECTIONS(state, connections) {
+      state.connections = connections;
+    },
+    ADD_CONNECTION: function ADD_CONNECTION(state, connection) {
+      if (state.connections == null) {
+        state.connections = [];
+      }
+
+      state.connections.push(connection);
     }
   },
   actions: {
@@ -56962,6 +57032,14 @@ module.exports = {
     setCurrentUserMode: function setCurrentUserMode(_ref2, mode) {
       var commit = _ref2.commit;
       commit(SET_CURRENT_USER_MODE, mode);
+    },
+    addFetchedConnections: function addFetchedConnections(_ref3, connections) {
+      var commit = _ref3.commit;
+      commit(ADD_FETCHED_CONNECTIONS, connections);
+    },
+    addConnection: function addConnection(_ref4, connection) {
+      var commit = _ref4.commit;
+      commit(ADD_CONNECTION, connection);
     }
   }
 };

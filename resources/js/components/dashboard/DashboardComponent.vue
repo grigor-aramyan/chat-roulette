@@ -95,7 +95,8 @@
             },
             ...mapActions([
                 'setCurrentUser',
-                'setPairingUser'
+                'setPairingUser',
+                'setCurrentUserMode'
             ])
         },
 
@@ -128,6 +129,7 @@
                             if (res.status == 200) {
                                 if ('msg' in res.data) {
                                     // TODO: case when no one to pair found
+                                    this.error = 'Sorry, no one to pair with now. Stay tuned, please!';
                                 } else if ('id' in res.data) {
                                     // TODO: got pairing user
                                     // dispatch event to firebase RD, so pairing user
@@ -136,17 +138,44 @@
                                     // set mode to 'pending' from pairing user side
                                     // lister to RD events from app.js (?)
 
+                                    window.RD.ref('pairedUser').set({
+                                        pairedFrom: this.currentUser.id,
+                                        pairedTo: res.data.id
+                                    });
+
                                     this.setPairingUser(res.data);
+                                    this.setCurrentUserMode('PENDING');
+                                    this.currentSubPage = QUESTIONS_SUBPAGE;
                                 }
                             } else {
                                 // TODO: display error and navigate somewhere
                                 this.error = 'no data fetched';
                             }
+
                         })
                         .catch(err => {
                             // TODO: display error and navigate somewhere
-                            this.error = 'no data fetched';
+                            // this.error = 'no data fetched';
+                            this.error = err.message;
                         });
+
+                    window.RD.ref('pairedUser').on('value', (snapshot) => {
+                        const snapData = snapshot.val();
+                        if (this.currentUser) {
+                            if ((snapData.pairedTo == this.currentUser.id)
+                                && (this.currentUser.mode == 'IDLE')) {
+                                // TODO: get user data with supplied id and
+                                // set it as paired user
+                                // set both users mode as pending in db
+                                // set this user mode as pending in vuex module
+                                // set current sub page to answering questions
+
+                                // TODO: create user controller to get user data with supplied id
+                            }
+                        }
+
+                    });
+
                 }
             }
         }
