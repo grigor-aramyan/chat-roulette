@@ -164,13 +164,48 @@
                         if (this.currentUser) {
                             if ((snapData.pairedTo == this.currentUser.id)
                                 && (this.currentUser.mode == 'IDLE')) {
-                                // TODO: get user data with supplied id and
-                                // set it as paired user
-                                // set both users mode as pending in db
-                                // set this user mode as pending in vuex module
-                                // set current sub page to answering questions
+                    
+                                const fetchUserDataUri = `${API_BASE_URI}/users/${snapData.pairedFrom}`;
 
-                                // TODO: create user controller to get user data with supplied id
+                                const token = localStorage.getItem(CR_USER_TOKEN);
+                                if (!token) {
+                                    return this.$router.replace('/login');
+                                }
+
+                                const config = {
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': token
+                                    }
+                                };
+
+                                axios.get(fetchUserDataUri, config)
+                                    .then(res => {
+                                        if ((res.status = 200) && ('id' in res.data)) {
+                                            this.setPairingUser(res.data);
+                                            this.setCurrentUserMode('PENDING');
+                                            this.currentSubPage = QUESTIONS_SUBPAGE;
+
+                                            const setPendingModeUri = `${API_BASE_URI}/modes/update`;
+
+                                            const payload = {
+                                                currentUser: this.currentUser.id,
+                                                pairedUser: res.data.id
+                                            };
+
+                                            axios.post(setPendingModeUri, payload, config)
+                                                .then(res => {
+                                                    // TODO: extend error handling
+                                                })
+                                                .catch(err => {
+                                                    // TODO: extend error handling
+                                                });
+                                        }
+                                    })
+                                    .catch(err => {
+                                        this.error = err.message;
+                                    });
+
                             }
                         }
 

@@ -2336,12 +2336,40 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
           var snapData = snapshot.val();
 
           if (_this2.currentUser) {
-            if (snapData.pairedTo == _this2.currentUser.id && _this2.currentUser.mode == 'IDLE') {// TODO: get user data with supplied id and
-              // set it as paired user
-              // set both users mode as pending in db
-              // set this user mode as pending in vuex module
-              // set current sub page to answering questions
-              // TODO: create user controller to get user data with supplied id
+            if (snapData.pairedTo == _this2.currentUser.id && _this2.currentUser.mode == 'IDLE') {
+              var fetchUserDataUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/users/").concat(snapData.pairedFrom);
+
+              var _token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+              if (!_token) {
+                return _this2.$router.replace('/login');
+              }
+
+              var _config = {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': _token
+                }
+              };
+              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchUserDataUri, _config).then(function (res) {
+                if ((res.status = 200) && 'id' in res.data) {
+                  _this2.setPairingUser(res.data);
+
+                  _this2.setCurrentUserMode('PENDING');
+
+                  _this2.currentSubPage = QUESTIONS_SUBPAGE;
+                  var setPendingModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/modes/update");
+                  var payload = {
+                    currentUser: _this2.currentUser.id,
+                    pairedUser: res.data.id
+                  };
+                  axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(setPendingModeUri, payload, _config).then(function (res) {// TODO: extend error handling
+                  })["catch"](function (err) {// TODO: extend error handling
+                  });
+                }
+              })["catch"](function (err) {
+                _this2.error = err.message;
+              });
             }
           }
         });
