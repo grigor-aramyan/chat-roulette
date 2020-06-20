@@ -2360,8 +2360,9 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
                   _this2.currentSubPage = QUESTIONS_SUBPAGE;
                   var setPendingModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/modes/update");
                   var payload = {
-                    currentUser: _this2.currentUser.id,
-                    pairedUser: res.data.id
+                    pairedFrom: _this2.currentUser.id,
+                    pairedTo: res.data.id,
+                    mode: 'PENDING'
                   };
                   axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(setPendingModeUri, payload, _config).then(function (res) {// TODO: extend error handling
                   })["catch"](function (err) {// TODO: extend error handling

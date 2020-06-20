@@ -189,8 +189,9 @@
                                             const setPendingModeUri = `${API_BASE_URI}/modes/update`;
 
                                             const payload = {
-                                                currentUser: this.currentUser.id,
-                                                pairedUser: res.data.id
+                                                pairedFrom: this.currentUser.id,
+                                                pairedTo: res.data.id,
+                                                mode: 'PENDING'
                                             };
 
                                             axios.post(setPendingModeUri, payload, config)

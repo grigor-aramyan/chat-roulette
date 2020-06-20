@@ -35,6 +35,7 @@ Route::group([
 
 Route::get('pair/find', 'FindPairController')->middleware('auth:api');
 Route::post('mode/update', 'UpdateUserModeController')->middleware('auth:api');
+Route::post('modes/update', 'UpdateUsersModeController')->middleware('auth:api');
 
 Route::apiResource('messages', 'MessageController')->except([
     'index', 'show'
