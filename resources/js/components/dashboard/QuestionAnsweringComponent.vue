@@ -61,8 +61,18 @@
 
         computed: {
             ...mapState({
-                pairingUser: state => state.pairingUser.pairingUser
+                currentUser: state => state.currentUser.currentUser,
+                pairingUser: state => state.pairingUser.pairingUser,
+                pairingUserAnswers: state => state.pairingUser.pairingUserAnswers
             })
+        },
+
+        watch: {
+            pairingUserAnswers: function (newAnswers, oldAnswers) {
+                if (newAnswers && (this.currentQuestion == END_SCREEN)) {
+                    this.$emit('switch-to-viewing-answers');
+                }
+            }
         },
 
         methods: {
@@ -148,6 +158,19 @@
                     // wait for pairing user answers
                     // so you can evaluate each other
                     // and decide whether want to pair or not
+
+                    window.RD.ref('answers').set({
+                        pairedFrom: this.currentUser.id,
+                        pairedTo: this.pairingUser.id,
+                        answerOne: this.answerOne,
+                        answerTwo: this.answerTwo,
+                        answerThree: this.answerThree
+                    });
+
+                    if (this.pairingUserAnswers) {
+                        this.$emit('switch-to-viewing-answers');
+                    }
+
                     console.log('pairing');
                 }
             }

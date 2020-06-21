@@ -2217,6 +2217,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
  // constants
@@ -2259,6 +2261,26 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
         _this.error = 'no data fetched';
       }
     });
+    window.RD.ref('answers').on('value', function (snapshot) {
+      var snapData = snapshot.val();
+
+      if (_this.currentUser && _this.pairingUser) {
+        if (snapData.pairedFrom == _this.pairingUser.id && snapData.pairedTo == _this.currentUser.id) {
+          var payload = [{
+            id: 1,
+            msg: snapData.answerOne
+          }, {
+            id: 2,
+            msg: snapData.answerTwo
+          }, {
+            id: 3,
+            msg: snapData.answerThree
+          }];
+
+          _this.setPairingUserAnswers(payload);
+        }
+      }
+    });
   },
   data: function data() {
     return {
@@ -2272,8 +2294,11 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
     },
     connectPairingUser: function connectPairingUser() {
       this.currentSubPage = CHAT_SUBPAGE;
+    },
+    switchToViewingAnswers: function switchToViewingAnswers() {
+      this.currentSubPage = ANSWERS_SUBPAGE;
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser', 'setCurrentUserMode'])),
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['setCurrentUser', 'setPairingUser', 'setCurrentUserMode', 'setPairingUserAnswers'])),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
     currentUser: function currentUser(state) {
       return state.currentUser.currentUser;
@@ -2618,10 +2643,23 @@ var END_SCREEN = 'END_SCREEN';
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+    currentUser: function currentUser(state) {
+      return state.currentUser.currentUser;
+    },
     pairingUser: function pairingUser(state) {
       return state.pairingUser.pairingUser;
+    },
+    pairingUserAnswers: function pairingUserAnswers(state) {
+      return state.pairingUser.pairingUserAnswers;
     }
   })),
+  watch: {
+    pairingUserAnswers: function pairingUserAnswers(newAnswers, oldAnswers) {
+      if (newAnswers && this.currentQuestion == END_SCREEN) {
+        this.$emit('switch-to-viewing-answers');
+      }
+    }
+  },
   methods: {
     setTimer: function setTimer(currentQ) {
       var _this = this;
@@ -2701,6 +2739,18 @@ var END_SCREEN = 'END_SCREEN';
         // wait for pairing user answers
         // so you can evaluate each other
         // and decide whether want to pair or not
+
+        window.RD.ref('answers').set({
+          pairedFrom: this.currentUser.id,
+          pairedTo: this.pairingUser.id,
+          answerOne: this.answerOne,
+          answerTwo: this.answerTwo,
+          answerThree: this.answerThree
+        });
+
+        if (this.pairingUserAnswers) {
+          this.$emit('switch-to-viewing-answers');
+        }
 
         console.log('pairing');
       }
@@ -38851,7 +38901,15 @@ var render = function() {
           ])
         ])
       : _vm.currentSubPage == "QUESTIONS_SUBPAGE"
-      ? _c("div", [_c("question-answering-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("question-answering-component", {
+              on: { "switch-to-viewing-answers": _vm.switchToViewingAnswers }
+            })
+          ],
+          1
+        )
       : _vm.currentSubPage == "ANSWERS_SUBPAGE"
       ? _c(
           "div",
@@ -57091,16 +57149,7 @@ module.exports = {
   state: function state() {
     return {
       pairingUser: null,
-      pairingUserAnswers: [{
-        id: 1,
-        msg: 'message1 from vuex'
-      }, {
-        id: 2,
-        msg: 'message2 from vuex'
-      }, {
-        id: 3,
-        msg: 'message3 from vuex'
-      }],
+      pairingUserAnswers: null,
       chatMessages: null
     };
   },

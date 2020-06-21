@@ -9,11 +9,7 @@ module.exports = {
     
     state: () => ({
         pairingUser: null,
-        pairingUserAnswers: [
-            { id: 1, msg: 'message1 from vuex' },
-            { id: 2, msg: 'message2 from vuex' },
-            { id: 3, msg: 'message3 from vuex' }
-        ],
+        pairingUserAnswers: null,
         chatMessages: null
     }),
 

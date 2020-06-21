@@ -10,7 +10,9 @@
             <h1 style="color:yellow;">Default dashboard</h1>
         </div>
         <div v-else-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
-            <question-answering-component></question-answering-component>
+            <question-answering-component
+                @switch-to-viewing-answers="switchToViewingAnswers">
+            </question-answering-component>
         </div>
         <div v-else-if="currentSubPage == 'ANSWERS_SUBPAGE'">
             <answers-viewing-component
@@ -77,6 +79,23 @@
                         this.error = 'no data fetched';
                     }
                 });
+
+            window.RD.ref('answers').on('value', (snapshot) => {
+                const snapData = snapshot.val();
+
+                if (this.currentUser && this.pairingUser) {
+                    if ((snapData.pairedFrom == this.pairingUser.id)
+                        && (snapData.pairedTo == this.currentUser.id)) {
+                            const payload = [
+                                { id: 1, msg: snapData.answerOne },
+                                { id: 2, msg: snapData.answerTwo },
+                                { id: 3, msg: snapData.answerThree }
+                            ];
+
+                            this.setPairingUserAnswers(payload);
+                    }
+                }
+            });
         },
 
         data() {
@@ -93,10 +112,14 @@
             connectPairingUser() {
                 this.currentSubPage = CHAT_SUBPAGE;
             },
+            switchToViewingAnswers() {
+                this.currentSubPage = ANSWERS_SUBPAGE;
+            },
             ...mapActions([
                 'setCurrentUser',
                 'setPairingUser',
-                'setCurrentUserMode'
+                'setCurrentUserMode',
+                'setPairingUserAnswers'
             ])
         },
 
