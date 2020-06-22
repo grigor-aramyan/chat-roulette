@@ -2082,19 +2082,102 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    var _this = this;
+
+    window.RD.ref('pairingReply').on('value', function (snapshot) {
+      var snapData = snapshot.val();
+
+      if (_this.currentUser && _this.pairingUser) {
+        if (snapData.pairedTo == _this.currentUser.id && snapData.pairedFrom == _this.pairingUser.id) {
+          if (_this.pairingDecision && snapData.status) {
+            // TODO: pairing complete
+            // switch to chat page
+            _this.$emit('connect-pairing-user');
+          } else if (_this.pairingDecision && !snapData.status) {
+            // TODO: pairing rejected from the other side
+            // print some msg for user to know what happened
+            var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
+            var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+            if (!token) {
+              return _this.$router.replace('/login');
+            }
+
+            var config = {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+              }
+            };
+            var payload = {
+              mode: 'IDLE'
+            };
+            axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, config).then(function (res) {
+              if (res.status == 200) {
+                var updatedMode = res.data.mode;
+
+                _this.setCurrentUserMode(updatedMode);
+
+                _this.removePairingUser();
+
+                _this.removePairingUserAnswers();
+
+                _this.error = 'Pairing rejected from the other side((';
+                setTimeout(function () {
+                  _this.$emit('reject-pairing-user');
+                }, 10000);
+              } else {
+                _this.error = 'something weird happened';
+              }
+            })["catch"](function (err) {
+              _this.error = err.message;
+            });
+          } else if (_this.pairingDecision == null) {
+            if (snapData.status) {
+              _this.pairingReply = snapData.status; // TODO: print some msg for user to know his pair
+              // is interested to connect
+
+              _this.error = 'Pair is interested to connect ))';
+            } else {
+              // TODO: print some msg for user to know his pair
+              // rejects pairing
+              // clear data and return to dashboard
+              _this.error = 'Pairing rejected from the other side (( Sorry. Stay connected and we\'ll find another pair for you';
+              setTimeout(function () {
+                _this.removePairingUser();
+
+                _this.removePairingUserAnswers();
+
+                _this.$emit('reject-pairing-user');
+              }, 10000);
+            }
+          }
+        }
+      }
+    });
+  },
   data: function data() {
     return {
+      pairingReply: null,
+      pairingDecision: null,
       error: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    currentUser: function currentUser(state) {
+      return state.currentUser.currentUser;
+    },
+    pairingUser: function pairingUser(state) {
+      return state.pairingUser.pairingUser;
+    },
     pairingUserAnswers: function pairingUserAnswers(state) {
       return state.pairingUser.pairingUserAnswers;
     }
   })),
   methods: _objectSpread({
     reject: function reject() {
-      var _this = this;
+      var _this2 = this;
 
       var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
       var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
@@ -2116,23 +2199,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (res.status == 200) {
           var updatedMode = res.data.mode;
 
-          _this.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about rejection
+          _this2.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about rejection
+          // status: 0 (rejected), 1 (paired)
 
 
-          _this.removePairingUser();
+          window.RD.ref('pairingReply').set({
+            pairedFrom: _this2.currentUser.id,
+            pairedTo: _this2.pairingUser.id,
+            status: 0
+          });
 
-          _this.removePairingUserAnswers();
+          _this2.removePairingUser();
 
-          _this.$emit('reject-pairing-user');
+          _this2.removePairingUserAnswers();
+
+          _this2.$emit('reject-pairing-user');
         } else {
-          _this.error = 'something weird happened';
+          _this2.error = 'something weird happened';
         }
       })["catch"](function (err) {
-        _this.error = err.message;
+        _this2.error = err.message;
       });
     },
     connect: function connect() {
-      var _this2 = this;
+      var _this3 = this;
 
       var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
       var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
@@ -2154,15 +2244,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (res.status == 200) {
           var updatedMode = res.data.mode;
 
-          _this2.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about connection
+          _this3.setCurrentUserMode(updatedMode); // TODO firebase RD call to notify pairing user about connection
 
 
-          _this2.$emit('connect-pairing-user');
+          window.RD.ref('pairingReply').set({
+            pairedFrom: _this3.currentUser.id,
+            pairedTo: _this3.pairingUser.id,
+            status: 1
+          });
+
+          if (_this3.pairingReply) {
+            _this3.$emit('connect-pairing-user');
+          } else {
+            _this3.pairingDecision = 1;
+          }
         } else {
-          _this2.error = 'something weird happened';
+          _this3.error = 'something weird happened';
         }
       })["catch"](function (err) {
-        _this2.error = err.message;
+        _this3.error = err.message;
       });
     }
   }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode']))
@@ -2695,11 +2795,21 @@ var END_SCREEN = 'END_SCREEN';
 
             _this.setTimer(3);
           } else if (currentQ == 3) {
-            _this.currentQuestion = END_SCREEN;
             _this.startTime = 0;
             clearInterval(_this.intervalId);
             _this.currentQuestion = END_SCREEN;
             _this.intervalId = null;
+            window.RD.ref('answers').set({
+              pairedFrom: _this.currentUser.id,
+              pairedTo: _this.pairingUser.id,
+              answerOne: _this.answerOne,
+              answerTwo: _this.answerTwo,
+              answerThree: _this.answerThree
+            });
+
+            if (_this.pairingUserAnswers) {
+              _this.$emit('switch-to-viewing-answers');
+            }
           }
         }
       }, 1000);
