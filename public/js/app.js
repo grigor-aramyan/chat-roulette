@@ -2567,6 +2567,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var MESSAGING = 'MESSAGING';
 var END_OF_MESSAGING = 'END_OF_MESSAGING';
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    var _this = this;
+
+    window.RD.ref('chatMessage').on('value', function (snapshot) {
+      var snapData = snapshot.val();
+
+      if (_this.currentUser && _this.pairingUser) {
+        if (snapData.sendedTo == _this.currentUser.id && snapData.sendedFrom == _this.pairingUser.id) {
+          var payload = {
+            content: snapData.content,
+            addressed_to: snapData.sendedTo,
+            user_id: snapData.sendedFrom,
+            created_at: snapData.date,
+            id: snapData.id
+          };
+
+          _this.addNewChatMessage(payload);
+        }
+      }
+    });
+  },
   data: function data() {
     return {
       section: MESSAGING,
@@ -2575,6 +2596,9 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    currentUser: function currentUser(state) {
+      return state.currentUser.currentUser;
+    },
     pairingUser: function pairingUser(state) {
       return state.pairingUser.pairingUser;
     },
@@ -2587,7 +2611,7 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
       this.section = END_OF_MESSAGING;
     },
     becomeFriends: function becomeFriends() {
-      var _this = this;
+      var _this2 = this;
 
       var becomeFriendsUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/connections");
       var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
@@ -2607,25 +2631,25 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(becomeFriendsUri, payload, config).then(function (res) {
         if (res.status == 201) {
-          _this.addConnection(_this.pairingUser.id); // TODO: send notif to firebase RD
+          _this2.addConnection(_this2.pairingUser.id); // TODO: send notif to firebase RD
           // so paired user can know you become friends
 
 
-          _this.error = '';
+          _this2.error = '';
         } else if (res.status == 200) {
-          _this.error = 'already connected. Try to refresh page, please';
+          _this2.error = 'already connected. Try to refresh page, please';
         } else {
-          _this.error = 'something weird happened. Try one more time, please';
+          _this2.error = 'something weird happened. Try one more time, please';
         }
       })["catch"](function (err) {
-        _this.error = err.message;
+        _this2.error = err.message;
       });
     },
     stayAnonimous: function stayAnonimous() {
       console.log('stay anonym');
     },
     send: function send() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.currentMessage) {
         var storeMessageUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/messages");
@@ -2647,20 +2671,27 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         };
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(storeMessageUri, payload, config).then(function (res) {
           if (res.status == 201) {
-            _this2.addNewChatMessage(res.data); // TODO: send added message to firebase RD
+            _this3.addNewChatMessage(res.data); // TODO: send added message to firebase RD
             // so paired user can receive it realtime too
 
 
-            _this2.error = '';
-            _this2.currentMessage = '';
+            window.RD.ref('chatMessage').set({
+              content: res.data.content,
+              date: res.data.created_at,
+              id: res.data.id,
+              sendedFrom: res.data.user_id,
+              sendedTo: res.data.addressed_to
+            });
+            _this3.error = '';
+            _this3.currentMessage = '';
           } else {
-            _this2.error = 'something weird happened. Try one more time, please';
+            _this3.error = 'something weird happened. Try one more time, please';
           }
         })["catch"](function (err) {
           if (err.response.status == 400) {
-            _this2.error = err.response.data.msg;
+            _this3.error = err.response.data.msg;
           } else {
-            _this2.error = err.message;
+            _this3.error = err.message;
           }
         });
       } else {

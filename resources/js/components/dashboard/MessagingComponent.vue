@@ -50,6 +50,28 @@
     const END_OF_MESSAGING = 'END_OF_MESSAGING';
 
     export default {
+        mounted() {
+            window.RD.ref('chatMessage').on('value', (snapshot) => {
+                const snapData = snapshot.val();
+
+                if (this.currentUser && this.pairingUser) {
+                    if ((snapData.sendedTo == this.currentUser.id) &&
+                        (snapData.sendedFrom == this.pairingUser.id)) {
+                            const payload = {
+                                content: snapData.content,
+                                addressed_to: snapData.sendedTo,
+                                user_id: snapData.sendedFrom,
+                                created_at: snapData.date,
+                                id: snapData.id
+                            };
+
+                            this.addNewChatMessage(payload);
+                        }
+                }
+
+            });
+        },
+
         data() {
             return {
                 section: MESSAGING,
@@ -60,6 +82,7 @@
 
         computed: {
             ...mapState({
+                currentUser: state => state.currentUser.currentUser,
                 pairingUser: state => state.pairingUser.pairingUser,
                 chatMessages: state => state.pairingUser.chatMessages
             })
@@ -138,6 +161,13 @@
 
                                 // TODO: send added message to firebase RD
                                 // so paired user can receive it realtime too
+                                window.RD.ref('chatMessage').set({
+                                    content: res.data.content,
+                                    date: res.data.created_at,
+                                    id: res.data.id,
+                                    sendedFrom: res.data.user_id,
+                                    sendedTo: res.data.addressed_to
+                                });
 
                                 this.error = '';
                                 this.currentMessage = '';
