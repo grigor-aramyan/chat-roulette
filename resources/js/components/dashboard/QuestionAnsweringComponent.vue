@@ -105,12 +105,23 @@
                             this.currentQuestion = QUESTION_THREE;
                             this.setTimer(3);
                         } else if (currentQ == 3) {
-                            this.currentQuestion = END_SCREEN;
-
+                            
                             this.startTime = 0;
                             clearInterval(this.intervalId);
                             this.currentQuestion = END_SCREEN;
                             this.intervalId = null;
+
+                            window.RD.ref('answers').set({
+                                pairedFrom: this.currentUser.id,
+                                pairedTo: this.pairingUser.id,
+                                answerOne: this.answerOne,
+                                answerTwo: this.answerTwo,
+                                answerThree: this.answerThree
+                            });
+
+                            if (this.pairingUserAnswers) {
+                                this.$emit('switch-to-viewing-answers');
+                            }
                         }
                     }
                 }, 1000);
