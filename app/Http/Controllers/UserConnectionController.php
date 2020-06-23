@@ -73,6 +73,34 @@ class UserConnectionController extends Controller
 
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $current_user = auth()->user();
+
+        $uc = UserConnection::where('connected_from', $current_user->id)
+            ->where('connected_to', $id)->first();
+
+        if ($uc) {
+            $deleted = UserConnection::destroy($uc->id);
+
+            if ($deleted) {
+                return response()->json([ 'msg' => 'deleted' ], 200);
+            } else {
+                return response()->json([ 'msg' => 'some weird error happened' ], 500);
+            }
+        } else {
+            return response()->json([ 'msg' => 'connection not found' ], 404);
+        }
+
+    }
+
+
+    /**
      * check if users with submitted ids are connected
      * 
      * @param int $id_1

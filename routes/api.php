@@ -45,5 +45,6 @@ Route::delete('messages/all/{id}', 'MessageController@delete_all')->middleware('
 
 Route::post('connections', 'UserConnectionController@store')->middleware('auth:api');
 Route::get('connections', 'UserConnectionController@index')->middleware('auth:api');
+Route::delete('connections/{id}', 'UserConnectionController@destroy')->middleware('auth:api');
 
 Route::get('users/{id}', 'UserController@show')->middleware('auth:api');
