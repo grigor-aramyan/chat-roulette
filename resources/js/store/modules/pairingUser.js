@@ -4,6 +4,7 @@ const SET_PAIRING_USER_ANSWERS = 'SET_PAIRING_USER_ANSWERS';
 const REMOVE_PAIRING_USER_ANSWERS = 'REMOVE_PAIRING_USER_ANSWERS';
 const REMOVE_PAIRING_USER = 'REMOVE_PAIRING_USER';
 const ADD_NEW_CHAT_MESSAGE = 'ADD_NEW_CHAT_MESSAGE';
+const REMOVE_CHAT_MESSAGES = 'REMOVE_CHAT_MESSAGES';
 
 module.exports = {
     
@@ -33,6 +34,9 @@ module.exports = {
                 state.chatMessages = [];
                 state.chatMessages.push(newMessage);
             }
+        },
+        REMOVE_CHAT_MESSAGES (state) {
+            state.chatMessages = null;
         }
     },
 
@@ -51,6 +55,9 @@ module.exports = {
         },
         addNewChatMessage({ commit }, newMessage) {
             commit(ADD_NEW_CHAT_MESSAGE, newMessage);
+        },
+        removeChatMessages({ commit }) {
+            commit(REMOVE_CHAT_MESSAGES);
         }
     }
 }

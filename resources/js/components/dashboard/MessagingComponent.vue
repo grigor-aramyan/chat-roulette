@@ -70,12 +70,50 @@
                 }
 
             });
+
+            window.RD.ref('friendingReply').on('value', (snapshot) => {
+                const snapData = snapshot.val();
+
+                if (this.currentUser && this.pairingUser) {
+                    if ((snapData.friendingTo == this.currentUser.id) &&
+                        (snapData.friendingFrom == this.pairingUser.id)) {
+                            if (snapData.status == 1) {
+                                if (this.friendingDecision == 1) {
+                                    this.addConnection(this.pairingUser.id);
+                                    this.error = 'you\'ve just become friends))';
+                                } else if (this.friendingDecision == null) {
+                                    this.error = 'your connection wants to become friends with you)';
+                                    this.friendingReply = 1;
+                                }
+                            } else if (snapData.status == 0) {
+                                this.error = 'pair rejected friending';
+
+                                setTimeout(() => {
+                                    
+                                    if (this.friendingDecision == 1) {
+                                        // TODO: clear connection from backend
+                                        // set IDLE mode in backend
+                                    }
+
+                                    this.removePairingUser();
+                                    this.removePairingUserAnswers();
+                                    this.removeChatMessages();
+                                    this.setCurrentUserMode('IDLE');
+
+                                    this.$emit('friending-rejected');
+                                }, 10000);
+                            }
+                    }
+                }
+            });
         },
 
         data() {
             return {
                 section: MESSAGING,
                 currentMessage: '',
+                friendingReply: null,
+                friendingDecision: null,
                 error: ''
             }
         },
@@ -93,45 +131,76 @@
                 this.section = END_OF_MESSAGING;
             },
             becomeFriends() {
-                const becomeFriendsUri = `${API_BASE_URI}/connections`;
+                if (this.friendingReply == 1) {
+                    this.addConnection(this.pairingUser.id);
 
-                const token = localStorage.getItem(CR_USER_TOKEN);
-                if (!token) {
-                    return this.$router.replace('/login');
-                }
-
-                const config = {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    }
-                };
-
-                const payload = {
-                    connected_to: this.pairingUser.id
-                };
-
-                axios.post(becomeFriendsUri, payload, config)
-                    .then(res => {
-                        if (res.status == 201) {
-                            this.addConnection(this.pairingUser.id);
-
-                            // TODO: send notif to firebase RD
-                            // so paired user can know you become friends
-
-                            this.error = '';
-                        } else if (res.status == 200) {
-                            this.error = 'already connected. Try to refresh page, please';
-                        } else {
-                            this.error = 'something weird happened. Try one more time, please';
-                        }
-                    })
-                    .catch(err => {
-                        this.error = err.message;
+                    // TODO: send notif to firebase RD
+                    // so paired user can know you become friends
+                    window.RD.ref('friendingReply').set({
+                        friendingFrom: this.currentUser.id,
+                        friendingTo: this.pairingUser.id,
+                        status: 1
                     });
+                } else if (this.friendingReply == null) {
+                    const becomeFriendsUri = `${API_BASE_URI}/connections`;
+
+                    const token = localStorage.getItem(CR_USER_TOKEN);
+                    if (!token) {
+                        return this.$router.replace('/login');
+                    }
+
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
+                        }
+                    };
+
+                    const payload = {
+                        connected_to: this.pairingUser.id
+                    };
+
+                    axios.post(becomeFriendsUri, payload, config)
+                        .then(res => {
+                            if (res.status == 201) {
+
+                                // TODO: send notif to firebase RD
+                                // so paired user can know you become friends
+                                window.RD.ref('friendingReply').set({
+                                    friendingFrom: this.currentUser.id,
+                                    friendingTo: this.pairingUser.id,
+                                    status: 1
+                                });
+
+                                this.friendingDecision = 1;
+                                this.error = '';
+                            } else if (res.status == 200) {
+                                this.error = 'already connected. Try to refresh page, please';
+                            } else {
+                                this.error = 'something weird happened. Try one more time, please';
+                            }
+                        })
+                        .catch(err => {
+                            this.error = err.message;
+                        });
+                    }
+                
             },
             stayAnonimous() {
-                console.log('stay anonym');
+                window.RD.ref('friendingReply').set({
+                    friendingFrom: this.currentUser.id,
+                    friendingTo: this.pairingUser.id,
+                    status: 0
+                });
+
+                // TODO: set IDLE mode in backend
+
+                this.removePairingUser();
+                this.removePairingUserAnswers();
+                this.removeChatMessages();
+                this.setCurrentUserMode('IDLE');
+
+                this.$emit('friending-rejected');
             },
             send() {
                 if (this.currentMessage) {
@@ -189,7 +258,11 @@
             },
             ...mapActions([
                 'addNewChatMessage',
-                'addConnection'
+                'addConnection',
+                'removePairingUser',
+                'removePairingUserAnswers',
+                'setCurrentUserMode',
+                'removeChatMessages'
             ])
         }
     }

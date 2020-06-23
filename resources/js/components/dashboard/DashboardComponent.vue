@@ -21,7 +21,9 @@
             </answers-viewing-component>
         </div>
         <div v-else-if="currentSubPage == 'CHAT_SUBPAGE'">
-            <messaging-component></messaging-component>
+            <messaging-component
+                @friending-rejected="rejectFriending">
+            </messaging-component>
         </div>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
@@ -106,6 +108,9 @@
         },
 
         methods: {
+            rejectFriending() {
+                this.currentSubPage = DEFAULT_DASHBOARD;
+            },
             rejectPairingUser() {
                 this.currentSubPage = DEFAULT_DASHBOARD;
             },
