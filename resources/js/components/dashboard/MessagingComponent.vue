@@ -93,14 +93,92 @@
                                     if (this.friendingDecision == 1) {
                                         // TODO: clear connection from backend
                                         // set IDLE mode in backend
+
+                                        const clearConnectionUri = `${API_BASE_URI}/connections/${this.pairingUser.id}`;
+
+                                        const token = localStorage.getItem(CR_USER_TOKEN);
+                                        if (!token) {
+                                            return this.$router.replace('/login');
+                                        }
+
+                                        const config = {
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': token
+                                            }
+                                        };
+
+                                        axios.delete(clearConnectionUri, config)
+                                            .then(res => {
+                                                if (res.status == 200) {
+                                                    const updateMyModeUri = `${API_BASE_URI}/mode/update`;
+
+                                                    const payload = {
+                                                        mode: 'IDLE'
+                                                    };
+
+                                                    axios.post(updateMyModeUri, payload, config)
+                                                        .then(res1 => {
+                                                            if (res1.status == 200) {
+                                                                this.removePairingUser();
+                                                                this.removePairingUserAnswers();
+                                                                this.removeChatMessages();
+                                                                this.setCurrentUserMode(res1.data.mode);
+
+                                                                this.$emit('friending-rejected');
+                                                            } else {
+                                                                this.error = 'failed updating mode in backend';
+                                                                // TODO: implement better error handling scheme
+                                                            }
+                                                        })
+                                                        .catch(err1 => {
+                                                            this.error = err1.message;
+                                                        });
+                                                } else {
+                                                    this.error = 'something weird with clearing connection';
+                                                }
+                                            })
+                                            .catch(err => {
+                                                this.error = err.message;
+                                            });
+                                    } else if (this.friendingDecision == null) {
+                                        const updateMyModeUri = `${API_BASE_URI}/mode/update`;
+
+                                        const token = localStorage.getItem(CR_USER_TOKEN);
+                                        if (!token) {
+                                            return this.$router.replace('/login');
+                                        }
+
+                                        const config = {
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': token
+                                            }
+                                        };
+
+                                        const payload = {
+                                            mode: 'IDLE'
+                                        };
+
+                                        axios.post(updateMyModeUri, payload, config)
+                                            .then(res1 => {
+                                                if (res1.status == 200) {
+                                                    this.removePairingUser();
+                                                    this.removePairingUserAnswers();
+                                                    this.removeChatMessages();
+                                                    this.setCurrentUserMode(res1.data.mode);
+
+                                                    this.$emit('friending-rejected');
+                                                } else {
+                                                    this.error = 'failed updating mode in backend';
+                                                    // TODO: implement better error handling scheme
+                                                }
+                                            })
+                                            .catch(err1 => {
+                                                this.error = err1.message;
+                                            });
                                     }
 
-                                    this.removePairingUser();
-                                    this.removePairingUserAnswers();
-                                    this.removeChatMessages();
-                                    this.setCurrentUserMode('IDLE');
-
-                                    this.$emit('friending-rejected');
                                 }, 10000);
                             }
                     }
@@ -193,14 +271,41 @@
                     status: 0
                 });
 
-                // TODO: set IDLE mode in backend
+                const updateMyModeUri = `${API_BASE_URI}/mode/update`;
 
-                this.removePairingUser();
-                this.removePairingUserAnswers();
-                this.removeChatMessages();
-                this.setCurrentUserMode('IDLE');
+                const token = localStorage.getItem(CR_USER_TOKEN);
+                if (!token) {
+                    return this.$router.replace('/login');
+                }
 
-                this.$emit('friending-rejected');
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                };
+
+                const payload = {
+                    mode: 'IDLE'
+                };
+
+                axios.post(updateMyModeUri, payload, config)
+                    .then(res1 => {
+                        if (res1.status == 200) {
+                            this.removePairingUser();
+                            this.removePairingUserAnswers();
+                            this.removeChatMessages();
+                            this.setCurrentUserMode(res1.data.mode);
+
+                            this.$emit('friending-rejected');
+                        } else {
+                            this.error = 'failed updating mode in backend';
+                            // TODO: implement better error handling scheme
+                        }
+                    })
+                    .catch(err1 => {
+                        this.error = err1.message;
+                    });
             },
             send() {
                 if (this.currentMessage) {
