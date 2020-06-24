@@ -211,6 +211,7 @@
             becomeFriends() {
                 if (this.friendingReply == 1) {
                     this.addConnection(this.pairingUser.id);
+                    this.section = MESSAGING;
 
                     // TODO: send notif to firebase RD
                     // so paired user can know you become friends
@@ -251,6 +252,7 @@
                                 });
 
                                 this.friendingDecision = 1;
+                                this.section = MESSAGING;
                                 this.error = '';
                             } else if (res.status == 200) {
                                 this.error = 'already connected. Try to refresh page, please';

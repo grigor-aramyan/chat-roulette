@@ -2144,10 +2144,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               // rejects pairing
               // clear data and return to dashboard
               _this.error = 'Pairing rejected from the other side (( Sorry. Stay connected and we\'ll find another pair for you';
+
+              var _updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
+
+              var _token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+              if (!_token) {
+                return _this.$router.replace('/login');
+              }
+
+              var _config = {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': _token
+                }
+              };
+              var _payload = {
+                mode: 'IDLE'
+              };
+              axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(_updateMyModeUri, _payload, _config).then(function (res1) {
+                if (res1.status == 200) {} else {
+                  _this.error = 'failed updating mode in backend';
+                }
+              })["catch"](function (err1) {
+                _this.error = err1.message;
+              });
               setTimeout(function () {
                 _this.removePairingUser();
 
                 _this.removePairingUserAnswers();
+
+                _this.setCurrentUserMode('IDLE');
 
                 _this.$emit('reject-pairing-user');
               }, 10000);
@@ -2256,6 +2283,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           if (_this3.pairingReply) {
             _this3.$emit('connect-pairing-user');
           } else {
+            _this3.error = 'your pair is notified about your decision. wait for his reply, please';
             _this3.pairingDecision = 1;
           }
         } else {
@@ -2289,6 +2317,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2384,11 +2418,65 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
   },
   data: function data() {
     return {
-      currentSubPage: ANSWERS_SUBPAGE,
+      currentSubPage: DEFAULT_DASHBOARD,
+      connectIsVisible: false,
       error: ''
     };
   },
   methods: _objectSpread({
+    findPair: function findPair() {
+      var _this2 = this;
+
+      var fetchPairedUserUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/pair/find");
+      var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+      if (!token) {
+        return this.$router.replace('/login');
+      }
+
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      };
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchPairedUserUri, config).then(function (res) {
+        if (res.status == 200) {
+          if ('msg' in res.data) {
+            // TODO: case when no one to pair found
+            _this2.error = 'Sorry, no one to pair with now. Stay tuned, please!';
+          } else if ('id' in res.data) {
+            // TODO: got pairing user
+            // dispatch event to firebase RD, so pairing user
+            // can be notified about pairing and start answering
+            // this user questions as well
+            // set mode to 'pending' from pairing user side
+            // lister to RD events from app.js (?)
+            window.RD.ref('pairedUser').set({
+              pairedFrom: _this2.currentUser.id,
+              pairedTo: res.data.id
+            });
+
+            _this2.setPairingUser(res.data);
+
+            _this2.setCurrentUserMode('PENDING');
+
+            _this2.connectIsVisible = false;
+            _this2.currentSubPage = QUESTIONS_SUBPAGE;
+          }
+        } else {
+          // TODO: display error and navigate somewhere
+          _this2.error = 'no data fetched';
+        }
+      })["catch"](function (err) {
+        // TODO: display error and navigate somewhere
+        // this.error = 'no data fetched';
+        _this2.error = err.message;
+      });
+    },
+    rejectFriending: function rejectFriending() {
+      this.currentSubPage = DEFAULT_DASHBOARD;
+    },
     rejectPairingUser: function rejectPairingUser() {
       this.currentSubPage = DEFAULT_DASHBOARD;
     },
@@ -2409,92 +2497,48 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
   })),
   watch: {
     currentUser: function currentUser(newUser, oldUser) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (newUser && newUser.status == 'WANT_TO_CONNECT') {
-        var fetchPairedUserUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/pair/find");
-        var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
-
-        if (!token) {
-          return this.$router.replace('/login');
-        }
-
-        var config = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-          }
-        };
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchPairedUserUri, config).then(function (res) {
-          if (res.status == 200) {
-            if ('msg' in res.data) {
-              // TODO: case when no one to pair found
-              _this2.error = 'Sorry, no one to pair with now. Stay tuned, please!';
-            } else if ('id' in res.data) {
-              // TODO: got pairing user
-              // dispatch event to firebase RD, so pairing user
-              // can be notified about pairing and start answering
-              // this user questions as well
-              // set mode to 'pending' from pairing user side
-              // lister to RD events from app.js (?)
-              window.RD.ref('pairedUser').set({
-                pairedFrom: _this2.currentUser.id,
-                pairedTo: res.data.id
-              });
-
-              _this2.setPairingUser(res.data);
-
-              _this2.setCurrentUserMode('PENDING');
-
-              _this2.currentSubPage = QUESTIONS_SUBPAGE;
-            }
-          } else {
-            // TODO: display error and navigate somewhere
-            _this2.error = 'no data fetched';
-          }
-        })["catch"](function (err) {
-          // TODO: display error and navigate somewhere
-          // this.error = 'no data fetched';
-          _this2.error = err.message;
-        });
+        this.connectIsVisible = true;
         window.RD.ref('pairedUser').on('value', function (snapshot) {
           var snapData = snapshot.val();
 
-          if (_this2.currentUser) {
-            if (snapData.pairedTo == _this2.currentUser.id && _this2.currentUser.mode == 'IDLE') {
+          if (_this3.currentUser) {
+            if (snapData.pairedTo == _this3.currentUser.id && _this3.currentUser.mode == 'IDLE') {
               var fetchUserDataUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/users/").concat(snapData.pairedFrom);
+              var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
 
-              var _token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
-
-              if (!_token) {
-                return _this2.$router.replace('/login');
+              if (!token) {
+                return _this3.$router.replace('/login');
               }
 
-              var _config = {
+              var config = {
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': _token
+                  'Authorization': token
                 }
               };
-              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchUserDataUri, _config).then(function (res) {
+              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(fetchUserDataUri, config).then(function (res) {
                 if ((res.status = 200) && 'id' in res.data) {
-                  _this2.setPairingUser(res.data);
+                  _this3.setPairingUser(res.data);
 
-                  _this2.setCurrentUserMode('PENDING');
+                  _this3.setCurrentUserMode('PENDING');
 
-                  _this2.currentSubPage = QUESTIONS_SUBPAGE;
+                  _this3.connectIsVisible = false;
+                  _this3.currentSubPage = QUESTIONS_SUBPAGE;
                   var setPendingModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/modes/update");
                   var payload = {
-                    pairedFrom: _this2.currentUser.id,
+                    pairedFrom: _this3.currentUser.id,
                     pairedTo: res.data.id,
                     mode: 'PENDING'
                   };
-                  axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(setPendingModeUri, payload, _config).then(function (res) {// TODO: extend error handling
+                  axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(setPendingModeUri, payload, config).then(function (res) {// TODO: extend error handling
                   })["catch"](function (err) {// TODO: extend error handling
                   });
                 }
               })["catch"](function (err) {
-                _this2.error = err.message;
+                _this3.error = err.message;
               });
             }
           }
@@ -2587,11 +2631,116 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         }
       }
     });
+    window.RD.ref('friendingReply').on('value', function (snapshot) {
+      var snapData = snapshot.val();
+
+      if (_this.currentUser && _this.pairingUser) {
+        if (snapData.friendingTo == _this.currentUser.id && snapData.friendingFrom == _this.pairingUser.id) {
+          if (snapData.status == 1) {
+            if (_this.friendingDecision == 1) {
+              _this.addConnection(_this.pairingUser.id);
+
+              _this.error = 'you\'ve just become friends))';
+            } else if (_this.friendingDecision == null) {
+              _this.error = 'your connection wants to become friends with you)';
+              _this.friendingReply = 1;
+            }
+          } else if (snapData.status == 0) {
+            _this.error = 'pair rejected friending';
+            setTimeout(function () {
+              if (_this.friendingDecision == 1) {
+                // TODO: clear connection from backend
+                // set IDLE mode in backend
+                var clearConnectionUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/connections/").concat(_this.pairingUser.id);
+                var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+                if (!token) {
+                  return _this.$router.replace('/login');
+                }
+
+                var config = {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                  }
+                };
+                axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"](clearConnectionUri, config).then(function (res) {
+                  if (res.status == 200) {
+                    var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
+                    var payload = {
+                      mode: 'IDLE'
+                    };
+                    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, config).then(function (res1) {
+                      if (res1.status == 200) {
+                        _this.removePairingUser();
+
+                        _this.removePairingUserAnswers();
+
+                        _this.removeChatMessages();
+
+                        _this.setCurrentUserMode(res1.data.mode);
+
+                        _this.$emit('friending-rejected');
+                      } else {
+                        _this.error = 'failed updating mode in backend'; // TODO: implement better error handling scheme
+                      }
+                    })["catch"](function (err1) {
+                      _this.error = err1.message;
+                    });
+                  } else {
+                    _this.error = 'something weird with clearing connection';
+                  }
+                })["catch"](function (err) {
+                  _this.error = err.message;
+                });
+              } else if (_this.friendingDecision == null) {
+                var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
+
+                var _token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+                if (!_token) {
+                  return _this.$router.replace('/login');
+                }
+
+                var _config = {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': _token
+                  }
+                };
+                var payload = {
+                  mode: 'IDLE'
+                };
+                axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, _config).then(function (res1) {
+                  if (res1.status == 200) {
+                    _this.removePairingUser();
+
+                    _this.removePairingUserAnswers();
+
+                    _this.removeChatMessages();
+
+                    _this.setCurrentUserMode(res1.data.mode);
+
+                    _this.$emit('friending-rejected');
+                  } else {
+                    _this.error = 'failed updating mode in backend'; // TODO: implement better error handling scheme
+                  }
+                })["catch"](function (err1) {
+                  _this.error = err1.message;
+                });
+              }
+            }, 10000);
+          }
+        }
+      }
+    });
   },
   data: function data() {
     return {
       section: MESSAGING,
       currentMessage: '',
+      friendingReply: null,
+      friendingDecision: null,
       error: ''
     };
   },
@@ -2613,7 +2762,64 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
     becomeFriends: function becomeFriends() {
       var _this2 = this;
 
-      var becomeFriendsUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/connections");
+      if (this.friendingReply == 1) {
+        this.addConnection(this.pairingUser.id);
+        this.section = MESSAGING; // TODO: send notif to firebase RD
+        // so paired user can know you become friends
+
+        window.RD.ref('friendingReply').set({
+          friendingFrom: this.currentUser.id,
+          friendingTo: this.pairingUser.id,
+          status: 1
+        });
+      } else if (this.friendingReply == null) {
+        var becomeFriendsUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/connections");
+        var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+        if (!token) {
+          return this.$router.replace('/login');
+        }
+
+        var config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        };
+        var payload = {
+          connected_to: this.pairingUser.id
+        };
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(becomeFriendsUri, payload, config).then(function (res) {
+          if (res.status == 201) {
+            // TODO: send notif to firebase RD
+            // so paired user can know you become friends
+            window.RD.ref('friendingReply').set({
+              friendingFrom: _this2.currentUser.id,
+              friendingTo: _this2.pairingUser.id,
+              status: 1
+            });
+            _this2.friendingDecision = 1;
+            _this2.section = MESSAGING;
+            _this2.error = '';
+          } else if (res.status == 200) {
+            _this2.error = 'already connected. Try to refresh page, please';
+          } else {
+            _this2.error = 'something weird happened. Try one more time, please';
+          }
+        })["catch"](function (err) {
+          _this2.error = err.message;
+        });
+      }
+    },
+    stayAnonimous: function stayAnonimous() {
+      var _this3 = this;
+
+      window.RD.ref('friendingReply').set({
+        friendingFrom: this.currentUser.id,
+        friendingTo: this.pairingUser.id,
+        status: 0
+      });
+      var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
       var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
 
       if (!token) {
@@ -2627,29 +2833,28 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         }
       };
       var payload = {
-        connected_to: this.pairingUser.id
+        mode: 'IDLE'
       };
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(becomeFriendsUri, payload, config).then(function (res) {
-        if (res.status == 201) {
-          _this2.addConnection(_this2.pairingUser.id); // TODO: send notif to firebase RD
-          // so paired user can know you become friends
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(updateMyModeUri, payload, config).then(function (res1) {
+        if (res1.status == 200) {
+          _this3.removePairingUser();
 
+          _this3.removePairingUserAnswers();
 
-          _this2.error = '';
-        } else if (res.status == 200) {
-          _this2.error = 'already connected. Try to refresh page, please';
+          _this3.removeChatMessages();
+
+          _this3.setCurrentUserMode(res1.data.mode);
+
+          _this3.$emit('friending-rejected');
         } else {
-          _this2.error = 'something weird happened. Try one more time, please';
+          _this3.error = 'failed updating mode in backend'; // TODO: implement better error handling scheme
         }
-      })["catch"](function (err) {
-        _this2.error = err.message;
+      })["catch"](function (err1) {
+        _this3.error = err1.message;
       });
     },
-    stayAnonimous: function stayAnonimous() {
-      console.log('stay anonym');
-    },
     send: function send() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.currentMessage) {
         var storeMessageUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/messages");
@@ -2671,7 +2876,7 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
         };
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(storeMessageUri, payload, config).then(function (res) {
           if (res.status == 201) {
-            _this3.addNewChatMessage(res.data); // TODO: send added message to firebase RD
+            _this4.addNewChatMessage(res.data); // TODO: send added message to firebase RD
             // so paired user can receive it realtime too
 
 
@@ -2682,23 +2887,23 @@ var END_OF_MESSAGING = 'END_OF_MESSAGING';
               sendedFrom: res.data.user_id,
               sendedTo: res.data.addressed_to
             });
-            _this3.error = '';
-            _this3.currentMessage = '';
+            _this4.error = '';
+            _this4.currentMessage = '';
           } else {
-            _this3.error = 'something weird happened. Try one more time, please';
+            _this4.error = 'something weird happened. Try one more time, please';
           }
         })["catch"](function (err) {
           if (err.response.status == 400) {
-            _this3.error = err.response.data.msg;
+            _this4.error = err.response.data.msg;
           } else {
-            _this3.error = err.message;
+            _this4.error = err.message;
           }
         });
       } else {
         this.error = 'can\'t send empty message';
       }
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['addNewChatMessage', 'addConnection']))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(['addNewChatMessage', 'addConnection', 'removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode', 'removeChatMessages']))
 });
 
 /***/ }),
@@ -2769,7 +2974,7 @@ var END_SCREEN = 'END_SCREEN';
       currentQuestion: DEFAULT_SCREEN,
       startTime: 0,
       intervalId: null,
-      timeToAnswer: 5,
+      timeToAnswer: 10,
       error: ''
     };
   },
@@ -39035,6 +39240,12 @@ var render = function() {
       ? _c("p", [_vm._v("Pairing email: " + _vm._s(_vm.pairingUser.email))])
       : _vm._e(),
     _vm._v(" "),
+    _vm.connectIsVisible
+      ? _c("div", [
+          _c("button", { on: { click: _vm.findPair } }, [_vm._v("Find pair")])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _vm.currentSubPage == "DEFAULT_DASHBOARD"
       ? _c("div", [
           _c("h1", { staticStyle: { color: "yellow" } }, [
@@ -39065,7 +39276,15 @@ var render = function() {
           1
         )
       : _vm.currentSubPage == "CHAT_SUBPAGE"
-      ? _c("div", [_c("messaging-component")], 1)
+      ? _c(
+          "div",
+          [
+            _c("messaging-component", {
+              on: { "friending-rejected": _vm.rejectFriending }
+            })
+          ],
+          1
+        )
       : _vm._e(),
     _vm._v(" "),
     _vm.error
@@ -57286,6 +57505,7 @@ var SET_PAIRING_USER_ANSWERS = 'SET_PAIRING_USER_ANSWERS';
 var REMOVE_PAIRING_USER_ANSWERS = 'REMOVE_PAIRING_USER_ANSWERS';
 var REMOVE_PAIRING_USER = 'REMOVE_PAIRING_USER';
 var ADD_NEW_CHAT_MESSAGE = 'ADD_NEW_CHAT_MESSAGE';
+var REMOVE_CHAT_MESSAGES = 'REMOVE_CHAT_MESSAGES';
 module.exports = {
   state: function state() {
     return {
@@ -57314,6 +57534,9 @@ module.exports = {
         state.chatMessages = [];
         state.chatMessages.push(newMessage);
       }
+    },
+    REMOVE_CHAT_MESSAGES: function REMOVE_CHAT_MESSAGES(state) {
+      state.chatMessages = null;
     }
   },
   actions: {
@@ -57336,6 +57559,10 @@ module.exports = {
     addNewChatMessage: function addNewChatMessage(_ref5, newMessage) {
       var commit = _ref5.commit;
       commit(ADD_NEW_CHAT_MESSAGE, newMessage);
+    },
+    removeChatMessages: function removeChatMessages(_ref6) {
+      var commit = _ref6.commit;
+      commit(REMOVE_CHAT_MESSAGES);
     }
   }
 };

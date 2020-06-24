@@ -6,6 +6,10 @@
 
         <p v-if="pairingUser">Pairing email: {{ pairingUser.email }}</p>
 
+        <div v-if="connectIsVisible">
+            <button @click="findPair">Find pair</button>
+        </div>
+
         <div v-if="currentSubPage == 'DEFAULT_DASHBOARD'">
             <h1 style="color:yellow;">Default dashboard</h1>
         </div>
@@ -102,12 +106,65 @@
 
         data() {
             return {
-                currentSubPage: ANSWERS_SUBPAGE,
+                currentSubPage: DEFAULT_DASHBOARD,
+                connectIsVisible: false,
                 error: ''
             }
         },
 
         methods: {
+            findPair() {
+                const fetchPairedUserUri = `${API_BASE_URI}/pair/find`;
+
+                const token = localStorage.getItem(CR_USER_TOKEN);
+                if (!token) {
+                    return this.$router.replace('/login');
+                }
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                };
+
+                axios.get(fetchPairedUserUri, config)
+                    .then(res => {
+                        if (res.status == 200) {
+                            if ('msg' in res.data) {
+                                // TODO: case when no one to pair found
+                                this.error = 'Sorry, no one to pair with now. Stay tuned, please!';
+                            } else if ('id' in res.data) {
+                                // TODO: got pairing user
+                                // dispatch event to firebase RD, so pairing user
+                                // can be notified about pairing and start answering
+                                // this user questions as well
+                                // set mode to 'pending' from pairing user side
+                                // lister to RD events from app.js (?)
+
+                                window.RD.ref('pairedUser').set({
+                                    pairedFrom: this.currentUser.id,
+                                    pairedTo: res.data.id
+                                });
+
+                                this.setPairingUser(res.data);
+                                this.setCurrentUserMode('PENDING');
+                                this.connectIsVisible = false;
+                                this.currentSubPage = QUESTIONS_SUBPAGE;
+
+                            }
+                        } else {
+                            // TODO: display error and navigate somewhere
+                            this.error = 'no data fetched';
+                        }
+
+                    })
+                    .catch(err => {
+                        // TODO: display error and navigate somewhere
+                        // this.error = 'no data fetched';
+                        this.error = err.message;
+                    });
+            },
             rejectFriending() {
                 this.currentSubPage = DEFAULT_DASHBOARD;
             },
@@ -138,54 +195,7 @@
         watch: {
             currentUser: function(newUser, oldUser) {
                 if (newUser && (newUser.status == 'WANT_TO_CONNECT')) {
-                    const fetchPairedUserUri = `${API_BASE_URI}/pair/find`;
-
-                    const token = localStorage.getItem(CR_USER_TOKEN);
-                    if (!token) {
-                        return this.$router.replace('/login');
-                    }
-
-                    const config = {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': token
-                        }
-                    };
-
-                    axios.get(fetchPairedUserUri, config)
-                        .then(res => {
-                            if (res.status == 200) {
-                                if ('msg' in res.data) {
-                                    // TODO: case when no one to pair found
-                                    this.error = 'Sorry, no one to pair with now. Stay tuned, please!';
-                                } else if ('id' in res.data) {
-                                    // TODO: got pairing user
-                                    // dispatch event to firebase RD, so pairing user
-                                    // can be notified about pairing and start answering
-                                    // this user questions as well
-                                    // set mode to 'pending' from pairing user side
-                                    // lister to RD events from app.js (?)
-
-                                    window.RD.ref('pairedUser').set({
-                                        pairedFrom: this.currentUser.id,
-                                        pairedTo: res.data.id
-                                    });
-
-                                    this.setPairingUser(res.data);
-                                    this.setCurrentUserMode('PENDING');
-                                    this.currentSubPage = QUESTIONS_SUBPAGE;
-                                }
-                            } else {
-                                // TODO: display error and navigate somewhere
-                                this.error = 'no data fetched';
-                            }
-
-                        })
-                        .catch(err => {
-                            // TODO: display error and navigate somewhere
-                            // this.error = 'no data fetched';
-                            this.error = err.message;
-                        });
+                    this.connectIsVisible = true;
 
                     window.RD.ref('pairedUser').on('value', (snapshot) => {
                         const snapData = snapshot.val();
@@ -212,6 +222,7 @@
                                         if ((res.status = 200) && ('id' in res.data)) {
                                             this.setPairingUser(res.data);
                                             this.setCurrentUserMode('PENDING');
+                                            this.connectIsVisible = false;
                                             this.currentSubPage = QUESTIONS_SUBPAGE;
 
                                             const setPendingModeUri = `${API_BASE_URI}/modes/update`;

@@ -54,7 +54,7 @@
                 currentQuestion: DEFAULT_SCREEN,
                 startTime: 0,
                 intervalId: null,
-                timeToAnswer: 5,
+                timeToAnswer: 10,
                 error: ''
             }
         },

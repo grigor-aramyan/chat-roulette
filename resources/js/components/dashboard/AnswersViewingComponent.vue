@@ -98,10 +98,42 @@
 
                                     this.error = 'Pairing rejected from the other side (( Sorry. Stay connected and we\'ll find another pair for you';
 
+                                    const updateMyModeUri = `${API_BASE_URI}/mode/update`;
+
+                                    const token = localStorage.getItem(CR_USER_TOKEN);
+                                    if (!token) {
+                                        return this.$router.replace('/login');
+                                    }
+
+                                    const config = {
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': token
+                                        }
+                                    };
+
+                                    const payload = {
+                                        mode: 'IDLE'
+                                    };
+
+                                    axios.post(updateMyModeUri, payload, config)
+                                        .then(res1 => {
+                                            if (res1.status == 200) {
+                                                
+                                            } else {
+                                                this.error = 'failed updating mode in backend';
+                                                
+                                            }
+                                        })
+                                        .catch(err1 => {
+                                            this.error = err1.message;
+                                        });
+                                    
                                     setTimeout(() => {
                                         
                                         this.removePairingUser();
                                         this.removePairingUserAnswers();
+                                        this.setCurrentUserMode('IDLE');
                                         this.$emit('reject-pairing-user');
 
                                     }, 10000);
@@ -213,6 +245,7 @@
                             if (this.pairingReply) {
                                 this.$emit('connect-pairing-user');
                             } else {
+                                this.error = 'your pair is notified about your decision. wait for his reply, please';
                                 this.pairingDecision = 1;
                             }
                         } else {
