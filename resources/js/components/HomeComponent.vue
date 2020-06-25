@@ -8,7 +8,95 @@
         <p v-if="error" style="color:red;">{{ error }}</p>
 
         <router-view></router-view>
-    </div>
+
+        <div v-if="$router.currentRoute.path == '/'" id='landing'>
+            <div id='our-mission'>
+                <h2>Our mission</h2>
+                <div class="row">
+                    <div class="col">
+                        <p style="font-style:italic;">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        </p>
+                    </div>
+                    <div class="col">
+                        <img style='width:20rem;heigth:20rem;' src='images/our_mission.png' />
+                    </div>
+                </div>
+            </div>
+
+            <div id='team'>
+                <h2>Team</h2>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <img class="card-img-top" src="images/team.jpg" />
+                            <div class="card-body">
+                                <h5 class="card-title">Member 1</h5>
+                                <p class="card-text">
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <img class="card-img-top" src="images/team.jpg" />
+                            <div class="card-body">
+                                <h5 class="card-title">Member 2</h5>
+                                <p class="card-text">
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <img class="card-img-top" src="images/team.jpg" />
+                            <div class="card-body">
+                                <h5 class="card-title">Member 3</h5>
+                                <p class="card-text">
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end team -->
+
+            <div id="rules">
+                <h2>Rules</h2>
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rule
+                                <span class="badge badge-primary badge-pill">1</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rule
+                                <span class="badge badge-primary badge-pill">2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rule
+                                <span class="badge badge-primary badge-pill">3</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rule
+                                <span class="badge badge-primary badge-pill">4</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rule
+                                <span class="badge badge-primary badge-pill">5</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+            </div> <!-- end rules -->
+        </div> <!-- end landing -->
+
+    </div> <!-- end container -->
 </template>
 
 <script>
@@ -84,3 +172,9 @@
         }
     }
 </script>
+
+<style scoped>
+    h2 {
+        text-align: center;
+    }
+</style>
