@@ -1941,6 +1941,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _statics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../statics */ "./resources/js/statics.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -1951,12 +1961,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      title: 'home component'
+      title: 'home component',
+      error: ''
     };
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+    currentUser: function currentUser(state) {
+      return state.currentUser.currentUser;
+    }
+  })),
+  methods: _objectSpread({
+    logout: function logout() {
+      var _this = this;
+
+      var updateMyModeUri = "".concat(_statics__WEBPACK_IMPORTED_MODULE_2__["API_BASE_URI"], "/mode/update");
+      var token = localStorage.getItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+      if (!token) {
+        return this.$router.replace('/login');
+      }
+
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      };
+      var payload = {
+        mode: 'OFFLINE'
+      };
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(updateMyModeUri, payload, config).then(function (res) {
+        if (res.status == 200) {
+          _this.removePairingUser();
+
+          _this.removePairingUserAnswers();
+
+          _this.removeChatMessages();
+
+          _this.setCurrentUserMode(res.data.mode);
+
+          localStorage.removeItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
+
+          _this.$router.replace('/');
+        } else {
+          _this.error = 'something weird happened. check your connection, please';
+        }
+      })["catch"](function (err) {
+        _this.error = err.message;
+      });
+    }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode', 'removeChatMessages']))
 });
 
 /***/ }),
@@ -39074,7 +39137,27 @@ var render = function() {
       _vm._v(" "),
       _c("router-link", { attrs: { to: "/register" } }, [_vm._v("Register")]),
       _vm._v(" "),
+      _c(
+        "a",
+        {
+          attrs: { href: "#" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.logout($event)
+            }
+          }
+        },
+        [_vm._v("Log out")]
+      ),
+      _vm._v(" "),
       _c("router-link", { attrs: { to: "/dashboard" } }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _vm.error
+        ? _c("p", { staticStyle: { color: "red" } }, [
+            _vm._v(_vm._s(_vm.error))
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("router-view")
     ],
