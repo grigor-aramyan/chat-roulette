@@ -2052,6 +2052,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -2068,6 +2070,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   })),
   methods: _objectSpread({
+    teamScroll: function teamScroll(hash) {
+      document.querySelector(hash).scrollIntoView({
+        behavior: 'smooth'
+      });
+    },
     logout: function logout() {
       var _this = this;
 
@@ -8069,7 +8076,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nh2[data-v-782dcf83] {\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh2[data-v-782dcf83] {\n    text-align: center;\n    color: green;\n}\n.section[data-v-782dcf83] {\n    height: 100vh;\n    padding-top: 20vh;\n}\n", ""]);
 
 // exports
 
@@ -39884,6 +39891,38 @@ var render = function() {
         [_vm._v("Log out")]
       ),
       _vm._v(" "),
+      _vm.$router.currentRoute.path == "/"
+        ? _c(
+            "a",
+            {
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.teamScroll("#team")
+                }
+              }
+            },
+            [_vm._v("Team")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.$router.currentRoute.path == "/"
+        ? _c(
+            "a",
+            {
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.teamScroll("#rules")
+                }
+              }
+            },
+            [_vm._v("Rules")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
       _c("router-link", { attrs: { to: "/dashboard" } }, [_vm._v("Dashboard")]),
       _vm._v(" "),
       _vm.error
@@ -39912,7 +39951,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { attrs: { id: "our-mission" } }, [
+    return _c("div", { staticClass: "section", attrs: { id: "our-mission" } }, [
       _c("h2", [_vm._v("Our mission")]),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -39937,7 +39976,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { attrs: { id: "team" } }, [
+    return _c("div", { staticClass: "section", attrs: { id: "team" } }, [
       _c("h2", [_vm._v("Team")]),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -40004,7 +40043,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { attrs: { id: "rules" } }, [
+    return _c("div", { staticClass: "section", attrs: { id: "rules" } }, [
       _c("h2", [_vm._v("Rules")]),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [

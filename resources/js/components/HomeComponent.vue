@@ -3,6 +3,8 @@
         <router-link to="/login">Login</router-link>
         <router-link to="/register">Register</router-link>
         <a href='#' @click.prevent="logout">Log out</a>
+        <a v-if="$router.currentRoute.path == '/'" href="#" @click.prevent="teamScroll('#team')">Team</a>
+        <a v-if="$router.currentRoute.path == '/'" href="#" @click.prevent="teamScroll('#rules')">Rules</a>
         <router-link to="/dashboard">Dashboard</router-link>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
@@ -10,7 +12,7 @@
         <router-view></router-view>
 
         <div v-if="$router.currentRoute.path == '/'" id='landing'>
-            <div id='our-mission'>
+            <div id='our-mission' class="section">
                 <h2>Our mission</h2>
                 <div class="row">
                     <div class="col">
@@ -24,7 +26,7 @@
                 </div>
             </div>
 
-            <div id='team'>
+            <div id='team' class="section">
                 <h2>Team</h2>
                 <div class="row">
                     <div class="col">
@@ -63,7 +65,7 @@
                 </div>
             </div> <!-- end team -->
 
-            <div id="rules">
+            <div id="rules" class="section">
                 <h2>Rules</h2>
                 <div class="row">
                     <div class="col-3"></div>
@@ -126,6 +128,12 @@
         },
 
         methods: {
+            teamScroll(hash) {
+                document.querySelector(hash).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            },
+
             logout() {
                 const updateMyModeUri = `${API_BASE_URI}/mode/update`;
 
@@ -176,5 +184,12 @@
 <style scoped>
     h2 {
         text-align: center;
+        color: green;
+
+    }
+
+    .section {
+        height: 100vh;
+        padding-top: 20vh;
     }
 </style>
