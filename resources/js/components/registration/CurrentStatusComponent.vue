@@ -1,15 +1,25 @@
 <template>
     <div>
-        <h1>Current status</h1>
+        <h3>Current status</h3>
 
-        <input type="radio" id="one" value="WANT_TO_CONNECT" v-model="picked">
-        <label for="one">Want to connect</label>
-        <br>
-        <input type="radio" id="two" value="A_BIT_LATER" v-model="picked">
-        <label for="two">A bit later</label>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="one" value="WANT_TO_CONNECT" v-model="picked">
+                        <label class="form-check-label" for="one">Want to connect</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="two" value="A_BIT_LATER" v-model="picked">
+                        <label class="form-check-label" for="two">A bit later</label>
+                    </div>
+                    <button @click.prevent="next" class="btn btn-primary">Next</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
 
-        <br />
-        <button @click="next">Next</button>
     </div>
 </template>
 
@@ -34,3 +44,12 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        margin-top: 10vh;
+        text-align: center;
+    }
+
+</style>
