@@ -1,11 +1,42 @@
 <template>
     <div class="container">
-        <router-link to="/login">Login</router-link>
-        <router-link to="/register">Register</router-link>
-        <a href='#' @click.prevent="logout">Log out</a>
-        <a v-if="$router.currentRoute.path == '/'" href="#" @click.prevent="teamScroll('#team')">Team</a>
-        <a v-if="$router.currentRoute.path == '/'" href="#" @click.prevent="teamScroll('#rules')">Rules</a>
-        <router-link to="/dashboard">Dashboard</router-link>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Chat Roulette</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li v-if="$router.currentRoute.path != '/'" class="nav-item">
+                        <router-link to="/" class="nav-link">Home</router-link>
+                    </li>
+                    <li v-if="currentUser" class="nav-item">
+                        <a href='#' @click.prevent="logout" class="nav-link">Log out</a>
+                    </li>
+                    <li v-if="currentUser" class="nav-item">
+                        <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+                    </li>
+                    <li class="nav-item dropdown" v-if="$router.currentRoute.path == '/'">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sections
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#" @click.prevent="teamScroll('#team')">Team</a>
+                            <a class="dropdown-item" href="#" @click.prevent="teamScroll('#rules')">Rules</a>
+                        </div>
+                    </li>
+                    <li v-if="!currentUser" class="nav-item">
+                        <router-link to="/register" class="nav-link">Register</router-link>
+                    </li>
+                    <li v-if="!currentUser" class="nav-item">
+                        <router-link to="/login" class="nav-link">Login</router-link>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
         <p v-if="error" style="color:red;">{{ error }}</p>
 

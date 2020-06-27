@@ -2054,6 +2054,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -39873,57 +39904,176 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
-      _c("router-link", { attrs: { to: "/login" } }, [_vm._v("Login")]),
-      _vm._v(" "),
-      _c("router-link", { attrs: { to: "/register" } }, [_vm._v("Register")]),
-      _vm._v(" "),
       _c(
-        "a",
-        {
-          attrs: { href: "#" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              return _vm.logout($event)
-            }
-          }
-        },
-        [_vm._v("Log out")]
+        "nav",
+        { staticClass: "navbar navbar-expand-lg navbar-dark bg-dark" },
+        [
+          _c("a", { staticClass: "navbar-brand", attrs: { href: "#" } }, [
+            _vm._v("Chat Roulette")
+          ]),
+          _vm._v(" "),
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "collapse navbar-collapse",
+              attrs: { id: "navbarSupportedContent" }
+            },
+            [
+              _c("ul", { staticClass: "navbar-nav ml-auto" }, [
+                _vm.$router.currentRoute.path != "/"
+                  ? _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          { staticClass: "nav-link", attrs: { to: "/" } },
+                          [_vm._v("Home")]
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.currentUser
+                  ? _c("li", { staticClass: "nav-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.logout($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Log out")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.currentUser
+                  ? _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: { to: "/dashboard" }
+                          },
+                          [_vm._v("Dashboard")]
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.$router.currentRoute.path == "/"
+                  ? _c("li", { staticClass: "nav-item dropdown" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav-link dropdown-toggle",
+                          attrs: {
+                            href: "#",
+                            id: "navbarDropdown",
+                            role: "button",
+                            "data-toggle": "dropdown",
+                            "aria-haspopup": "true",
+                            "aria-expanded": "false"
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        Sections\n                    "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "navbarDropdown" }
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "dropdown-item",
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.teamScroll("#team")
+                                }
+                              }
+                            },
+                            [_vm._v("Team")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "a",
+                            {
+                              staticClass: "dropdown-item",
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.teamScroll("#rules")
+                                }
+                              }
+                            },
+                            [_vm._v("Rules")]
+                          )
+                        ]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.currentUser
+                  ? _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: { to: "/register" }
+                          },
+                          [_vm._v("Register")]
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.currentUser
+                  ? _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          { staticClass: "nav-link", attrs: { to: "/login" } },
+                          [_vm._v("Login")]
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e()
+              ])
+            ]
+          )
+        ]
       ),
-      _vm._v(" "),
-      _vm.$router.currentRoute.path == "/"
-        ? _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.teamScroll("#team")
-                }
-              }
-            },
-            [_vm._v("Team")]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.$router.currentRoute.path == "/"
-        ? _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.teamScroll("#rules")
-                }
-              }
-            },
-            [_vm._v("Rules")]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("router-link", { attrs: { to: "/dashboard" } }, [_vm._v("Dashboard")]),
       _vm._v(" "),
       _vm.error
         ? _c("p", { staticStyle: { color: "red" } }, [
@@ -39935,11 +40085,11 @@ var render = function() {
       _vm._v(" "),
       _vm.$router.currentRoute.path == "/"
         ? _c("div", { attrs: { id: "landing" } }, [
-            _vm._m(0),
-            _vm._v(" "),
             _vm._m(1),
             _vm._v(" "),
-            _vm._m(2)
+            _vm._m(2),
+            _vm._v(" "),
+            _vm._m(3)
           ])
         : _vm._e()
     ],
@@ -39947,6 +40097,26 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "navbar-toggler",
+        attrs: {
+          type: "button",
+          "data-toggle": "collapse",
+          "data-target": "#navbarSupportedContent",
+          "aria-controls": "navbarSupportedContent",
+          "aria-expanded": "false",
+          "aria-label": "Toggle navigation"
+        }
+      },
+      [_c("span", { staticClass: "navbar-toggler-icon" })]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
