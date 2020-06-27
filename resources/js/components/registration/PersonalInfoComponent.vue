@@ -1,30 +1,43 @@
 <template>
     <div>
-        <h1>Personal info</h1>
+        <h3>Personal info</h3>
 
-        <input v-model="name" placeholder="Full name" />
-        <br />
-        <input v-model="password" type="password" placeholder="Password" />
-        <br />
-        <input v-model="confirmPassword" type="password" placeholder="Confirm password" />
-        <br />
-        <input v-model="email" placeholder="Email" />
-        <br />
-        <input v-model="age" min="10" type="number" placeholder="Age" />
-        <br />
-
-        <label for="gender">Gender</label>
-        <select v-model="sex" id="gender">
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-        </select>
-        <br />
-
-        <input v-model="city" placeholder="Country, city" />
-
-        <p v-if="error" style="color:red;">{{ error }}</p>
-        <br />
-        <button @click="next">Next</button>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group row">
+                        <input v-model="name" class="form-control" type="text" placeholder="Full name" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="password" class="form-control" type="password" placeholder="Password" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="confirmPassword" class="form-control" type="password" placeholder="Confirm password" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="email" class="form-control" type="text" placeholder="Email" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="age" min="10" class="form-control" type="number" placeholder="Age" />
+                    </div>
+                    <div class="form-group row">
+                        <label for="gender">Gender</label>
+                        <select v-model="sex" class="custom-select" id="gender">
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="city" class="form-control" type="text" placeholder="Country, city" />
+                    </div>
+                    <p v-if="error" class="error">{{ error }}</p>
+                    <button @click="next" class="btn btn-primary">Next</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        
     </div>
 </template>
 
@@ -85,3 +98,16 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        margin-top: 5vh;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+</style>
