@@ -32,12 +32,12 @@
                         <input v-model="city" class="form-control" type="text" placeholder="Country, city" />
                     </div>
                     <p v-if="error" class="error">{{ error }}</p>
-                    <button @click="next" class="btn btn-primary">Next</button>
+                    <button @click.prevent="next" class="btn btn-primary">Next</button>
                 </form>
             </div>
             <div class="col-4"></div>
         </div>
-        
+
     </div>
 </template>
 

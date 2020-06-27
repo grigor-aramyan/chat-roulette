@@ -1,17 +1,27 @@
 <template>
     <div>
-        <h1>Three Questions</h1>
+        <h3>Three Questions</h3>
 
-        <input v-model="questionOne" placeholder="Question 1" />
-        <br />
-        <input v-model="questionTwo" placeholder="Question 2" />
-        <br />
-        <input v-model="questionThree" placeholder="Question 3" />
-        <br />
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group row">
+                        <input v-model="questionOne" class="form-control" type="text" placeholder="Question 1" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="questionTwo" class="form-control" type="text" placeholder="Question 2" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="questionThree" class="form-control" type="text" placeholder="Question 3" />
+                    </div>
+                    <p v-if="error" class="error">{{ error }}</p>
+                    <button @click.prevent="next" class="btn btn-primary">Next</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
 
-        <p v-if="error" style="color:red;">{{ error }}</p>
-
-        <button @click="next">Next</button>
     </div>
 </template>
 
@@ -43,3 +53,16 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        margin-top: 5vh;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+</style>
