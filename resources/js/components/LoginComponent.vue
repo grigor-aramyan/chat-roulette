@@ -1,14 +1,26 @@
 <template>
     <div>
+
         <h1>Login</h1>
-        <input v-model="email" placeholder="Email" />
-        <br />
-        <input v-model="password" type="password" placeholder="Password" />
-        <br />
+        
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group row">
+                        <input v-model="email" class="form-control" type="text" placeholder="Email" />
+                    </div>
+                    <div class="form-group row">
+                        <input v-model="password" class="form-control" type="password" placeholder="Password" />
+                    </div>
+                    <button @click.prevent="doLogin" class="btn btn-primary login-btn">Login</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        
+        <p v-if="error" class="error">{{ error }}</p>
 
-        <p v-if="error" style="color:red;">{{ error }}</p>
-
-        <button @click="doLogin">Login</button>
     </div>
 </template>
 
@@ -75,3 +87,21 @@
         }
     }
 </script>
+
+<style scoped>
+    h1 {
+        color: green;
+        text-align: center;
+        margin-top: 20vh;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+
+    .login-btn {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
