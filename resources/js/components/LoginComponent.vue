@@ -13,7 +13,7 @@
                     <div class="form-group row">
                         <input v-model="password" class="form-control" type="password" placeholder="Password" />
                     </div>
-                    <button @click.prevent="doLogin" class="btn btn-primary login-btn">Login</button>
+                    <button @click.prevent="doLogin" class="btn btn-primary">Login</button>
                 </form>
             </div>
             <div class="col-4"></div>
@@ -98,10 +98,5 @@
     .error {
         color: red;
         text-align: center;
-    }
-
-    .login-btn {
-        margin-left: auto;
-        margin-right: auto;
     }
 </style>

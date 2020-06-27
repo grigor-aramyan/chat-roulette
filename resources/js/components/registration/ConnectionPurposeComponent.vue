@@ -1,18 +1,30 @@
 <template>
     <div>
-        <h1>Connection purpose</h1>
-        
-        <input type="radio" id="one" value="JUST_CHATTING" v-model="picked">
-        <label for="one">Just Chatting</label>
-        <br>
-        <input type="radio" id="two" value="RELATIONSHIP" v-model="picked">
-        <label for="two">Relationship</label>
-        <br>
-        <input type="radio" id="three" value="SEX" v-model="picked">
-        <label for="three">Sex</label>
+        <h3>Connection purpose</h3>
 
-        <br />
-        <button @click="next">Next</button>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="one" value="JUST_CHATTING" v-model="picked">
+                        <label class="form-check-label" for="one">Just Chatting</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="two" value="RELATIONSHIP" v-model="picked">
+                        <label class="form-check-label" for="two">Relationship</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="three" value="SEX" v-model="picked">
+                        <label class="form-check-label" for="three">Sex</label>
+                    </div>
+
+                    <button class="btn btn-primary" @click.prevent="next">Next</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        
     </div>
 </template>
 
@@ -39,3 +51,11 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        margin-top: 20vh;
+        text-align: center;
+    }
+</style>

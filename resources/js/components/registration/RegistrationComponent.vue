@@ -118,3 +118,10 @@
         }
     }
 </script>
+
+<style scoped>
+    h1 {
+        color: green;
+        margin-top: 3vh;
+    }
+</style>
