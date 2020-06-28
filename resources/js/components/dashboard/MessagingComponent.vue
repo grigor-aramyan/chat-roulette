@@ -10,10 +10,12 @@
 
                         <div v-if="chatMessages">
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item" :class="{ 'right-handed-message-style': msg.sendedFrom == currentUser.id }" v-for="msg in chatMessages" :key="msg.id">
+                                <li :class="{
+                                        'right-handed-message-style': msg.user_id == currentUser.id,
+                                        'list-group-item': true
+                                    }" v-for="msg in chatMessages" :key="msg.id">
                                     <div>
-                                        <!--span class="date-style">{{ msg.date }}</span-->
-                                        {{ msg.date }}
+                                        <span class="date-style">{{ msg.created_at.split('T')[1].split('.')[0] }}</span>
                                         {{ msg.content }}
                                     </div>
                                 </li>
@@ -403,5 +405,6 @@
         color: silver;
         font-size: 80%;
         display: block;
+        font-style: italic;
     }
 </style>

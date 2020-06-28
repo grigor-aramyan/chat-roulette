@@ -2831,6 +2831,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -8272,7 +8274,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-93a104c2] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-93a104c2] {\n    color: red;\n    text-align: center;\n}\n.right-handed-message-style[data-v-93a104c2] {\n    margin-left: auto;\n}\n.date-style[data-v-93a104c2] {\n    color: silver;\n    font-size: 80%;\n    display: block;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-93a104c2] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-93a104c2] {\n    color: red;\n    text-align: center;\n}\n.right-handed-message-style[data-v-93a104c2] {\n    margin-left: auto;\n}\n.date-style[data-v-93a104c2] {\n    color: silver;\n    font-size: 80%;\n    display: block;\n    font-style: italic;\n}\n", ""]);
 
 // exports
 
@@ -41210,18 +41212,23 @@ var render = function() {
                             "li",
                             {
                               key: msg.id,
-                              staticClass: "list-group-item",
                               class: {
                                 "right-handed-message-style":
-                                  msg.sendedFrom == _vm.currentUser.id
+                                  msg.user_id == _vm.currentUser.id,
+                                "list-group-item": true
                               }
                             },
                             [
                               _c("div", [
+                                _c("span", { staticClass: "date-style" }, [
+                                  _vm._v(
+                                    _vm._s(
+                                      msg.created_at.split("T")[1].split(".")[0]
+                                    )
+                                  )
+                                ]),
                                 _vm._v(
                                   "\n                                    " +
-                                    _vm._s(msg.date) +
-                                    "\n                                    " +
                                     _vm._s(msg.content) +
                                     "\n                                "
                                 )
