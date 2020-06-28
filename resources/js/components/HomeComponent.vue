@@ -12,12 +12,6 @@
                     <li v-if="$router.currentRoute.path != '/'" class="nav-item">
                         <router-link to="/" class="nav-link">Home</router-link>
                     </li>
-                    <li v-if="currentUser" class="nav-item">
-                        <a href='#' @click.prevent="logout" class="nav-link">Log out</a>
-                    </li>
-                    <li v-if="currentUser" class="nav-item">
-                        <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
-                    </li>
                     <li class="nav-item dropdown" v-if="$router.currentRoute.path == '/'">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Sections
@@ -27,6 +21,12 @@
                             <a class="dropdown-item" href="#" @click.prevent="teamScroll('#team')">Team</a>
                             <a class="dropdown-item" href="#" @click.prevent="teamScroll('#rules')">Rules</a>
                         </div>
+                    </li>
+                    <li v-if="currentUser && ($router.currentRoute.path == '/')" class="nav-item">
+                        <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+                    </li>
+                    <li v-if="currentUser" class="nav-item">
+                        <a href='#' @click.prevent="logout" class="nav-link">Log out</a>
                     </li>
                     <li v-if="!currentUser" class="nav-item">
                         <router-link to="/register" class="nav-link">Register</router-link>

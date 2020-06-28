@@ -1,18 +1,24 @@
 <template>
-    <div>
+    <div class="container">
         <h1>Dashboard</h1>
 
-        <p v-if="currentUser">Current email: {{ currentUser.email }}</p>
+        <p class="email-info" v-if="currentUser">Your email: {{ currentUser.email }}</p>
 
-        <p v-if="pairingUser">Pairing email: {{ pairingUser.email }}</p>
+        <p class="email-info" v-if="pairingUser">Your Pair email: {{ pairingUser.email }}</p>
 
         <div v-if="connectIsVisible">
-            <button @click="findPair">Find pair</button>
+            <div class="row mt-5">
+                <div class="col-5"></div>
+                <div class="col-2">
+                    <button @click="findPair" class="btn btn-info">Find pair</button>
+                </div>
+                <div class="col-5"></div>
+            </div>
         </div>
 
-        <div v-if="currentSubPage == 'DEFAULT_DASHBOARD'">
+        <!--div v-if="currentSubPage == 'DEFAULT_DASHBOARD'">
             <h1 style="color:yellow;">Default dashboard</h1>
-        </div>
+        </div-->
         <div v-else-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
             <question-answering-component
                 @switch-to-viewing-answers="switchToViewingAnswers">
@@ -30,7 +36,7 @@
             </messaging-component>
         </div>
 
-        <p v-if="error" style="color:red;">{{ error }}</p>
+        <p v-if="error" class="error">{{ error }}</p>
     </div>
 </template>
 
@@ -256,3 +262,23 @@
         }
     }
 </script>
+
+<style scoped>
+    h1 {
+        color: green;
+    }
+
+    .email-info {
+        font-style: italic;
+        color: greenyellow;
+    }
+
+    .container {
+        background-color: gray;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+</style>
