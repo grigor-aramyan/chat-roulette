@@ -1,35 +1,42 @@
 <template>
     <div>
-        <h1>Answering questions</h1>
-        <div v-if="currentQuestion == 'DEFAULT_SCREEN'">
-            <button @click="next('QUESTION_ONE')">Start answering</button>
-        </div>
-        <div v-else-if="currentQuestion == 'QUESTION_ONE' && pairingUser && pairingUser.question_one">
-            <p>{{ pairingUser.question_one }}</p>
-            <input v-model="answerOne" placeholder="Be as truthy, as possible, please" />
-            <br />
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <h3>Answering questions</h3>
+                <div v-if="currentQuestion == 'DEFAULT_SCREEN'">
+                    <button class="btn btn-primary" @click="next('QUESTION_ONE')">Start answering</button>
+                </div>
+                <div v-else-if="currentQuestion == 'QUESTION_ONE' && pairingUser && pairingUser.question_one">
+                    <div class="form-group row">
+                        <p class="question-style">{{ pairingUser.question_one }}</p>
+                        <input v-model="answerOne" class="form-control" type="text" placeholder="Be as truthy, as possible, please" />
+                        <button class="btn btn-info mt-2" @click="next('QUESTION_TWO')">Next</button>
+                    </div>
+                </div>
+                <div v-else-if="currentQuestion == 'QUESTION_TWO' && pairingUser && pairingUser.question_two">
+                    <div class="form-group row">
+                        <p class="question-style">{{ pairingUser.question_two }}</p>
+                        <input v-model="answerTwo" class="form-control" type="text" placeholder="Be as truthy, as possible, please" />
+                        <button class="btn btn-info mt-2" @click="next('QUESTION_THREE')">Next</button>
+                    </div>
+                </div>
+                <div v-else-if="currentQuestion == 'QUESTION_THREE' && pairingUser && pairingUser.question_three">
+                    <div class="form-group row">
+                        <p class="question-style">{{ pairingUser.question_three }}</p>
+                        <input v-model="answerThree" class="form-control" type="text" placeholder="Be as truthy, as possible, please" />
+                        <button class="btn btn-info mt-2" @click="pair">Pair with user</button>
+                    </div>
+                </div>
+                <div v-else-if="currentQuestion == 'END_SCREEN'">
+                    <p class="end-screen-style">Wait a bit, please! Your pair still answering to questions)</p>
+                </div>
 
-            <button @click="next('QUESTION_TWO')">Next</button>
+                <p v-if="error" class="error">{{ error }}</p>
+            </div>
+            <div class="col-4"></div>
         </div>
-        <div v-else-if="currentQuestion == 'QUESTION_TWO' && pairingUser && pairingUser.question_two">
-            <p>{{ pairingUser.question_two }}</p>
-            <input v-model="answerTwo" placeholder="Be as truthy, as possible, please" />
-            <br />
-
-            <button @click="next('QUESTION_THREE')">Next</button>
-        </div>
-        <div v-else-if="currentQuestion == 'QUESTION_THREE' && pairingUser && pairingUser.question_three">
-            <p>{{ pairingUser.question_three }}</p>
-            <input v-model="answerThree" placeholder="Be as truthy, as possible, please" />
-            <br />
-
-            <button @click="pair">Pair with user</button>
-        </div>
-        <div v-else-if="currentQuestion == 'END_SCREEN'">
-            <p style="color:purple;">Wait a bit, please! Your pair still answering to questions)</p>
-        </div>
-
-        <p v-if="error" style="color:red;">{{ error }}</p>
+        
     </div>
 </template>
 
@@ -188,3 +195,26 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+
+    .question-style {
+        color: white;
+        text-align: center;
+    }
+
+    .end-screen-style {
+        color: yellow;
+        font-style: italic;
+        text-align: center;
+    }
+</style>
