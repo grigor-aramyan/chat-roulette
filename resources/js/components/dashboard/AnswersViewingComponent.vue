@@ -1,17 +1,27 @@
 <template>
     <div>
-        <h1>Viewing answers of pair user</h1>
 
-        <ul>
-            <li v-for="answer in pairingUserAnswers" :key="answer.id">
-                {{ answer.msg }}
-            </li>
-        </ul>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <h3>Viewing answers of pair user</h3>
 
-        <p v-if="error" style="color:red;">{{ error }}</p>
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="answer in pairingUserAnswers" :key="answer.id">
+                            {{ answer.msg }}
+                        </li>
+                    </ul>
 
-        <button @click="reject" class="btn btn-danger">Reject</button>
-        <button @click="connect" class="btn btn-info">Connect</button>
+                    <p v-if="error" class="error">{{ error }}</p>
+
+                    <button @click.prevent="reject" class="btn btn-danger">Reject</button>
+                    <button @click.prevent="connect" class="btn btn-info">Connect</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
     </div>
 </template>
 
@@ -265,3 +275,15 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+</style>
