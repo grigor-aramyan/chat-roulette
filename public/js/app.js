@@ -2133,7 +2133,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           _this.removeChatMessages();
 
-          _this.setCurrentUserMode(res.data.mode);
+          _this.removeCurrentUser();
 
           localStorage.removeItem(_statics__WEBPACK_IMPORTED_MODULE_2__["CR_USER_TOKEN"]);
 
@@ -2145,7 +2145,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.error = err.message;
       });
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode', 'removeChatMessages']))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['removePairingUser', 'removePairingUserAnswers', 'setCurrentUserMode', 'removeChatMessages', 'removeCurrentUser']))
 });
 
 /***/ }),
@@ -59379,6 +59379,7 @@ var CR_USER_TOKEN = 'CR_USER_TOKEN';
 /***/ (function(module, exports) {
 
 var SET_CURRENT_USER = 'SET_CURRENT_USER';
+var REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
 var SET_CURRENT_USER_MODE = 'SET_CURRENT_USER_MODE';
 var ADD_FETCHED_CONNECTIONS = 'ADD_FETCHED_CONNECTIONS';
 var ADD_CONNECTION = 'ADD_CONNECTION';
@@ -59407,6 +59408,9 @@ module.exports = {
       }
 
       state.connections.push(connection);
+    },
+    REMOVE_CURRENT_USER: function REMOVE_CURRENT_USER(state) {
+      state.currentUser = null;
     }
   },
   actions: {
@@ -59425,6 +59429,10 @@ module.exports = {
     addConnection: function addConnection(_ref4, connection) {
       var commit = _ref4.commit;
       commit(ADD_CONNECTION, connection);
+    },
+    removeCurrentUser: function removeCurrentUser(_ref5) {
+      var commit = _ref5.commit;
+      commit(REMOVE_CURRENT_USER);
     }
   }
 };

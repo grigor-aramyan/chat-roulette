@@ -190,7 +190,7 @@
                             this.removePairingUser();
                             this.removePairingUserAnswers();
                             this.removeChatMessages();
-                            this.setCurrentUserMode(res.data.mode);
+                            this.removeCurrentUser();
                             localStorage.removeItem(CR_USER_TOKEN);
 
                             this.$router.replace('/');
@@ -206,7 +206,8 @@
                 'removePairingUser',
                 'removePairingUserAnswers',
                 'setCurrentUserMode',
-                'removeChatMessages'
+                'removeChatMessages',
+                'removeCurrentUser'
             ])
         }
     }

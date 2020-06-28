@@ -1,5 +1,6 @@
 
 const SET_CURRENT_USER = 'SET_CURRENT_USER';
+const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
 const SET_CURRENT_USER_MODE = 'SET_CURRENT_USER_MODE';
 const ADD_FETCHED_CONNECTIONS = 'ADD_FETCHED_CONNECTIONS';
 const ADD_CONNECTION = 'ADD_CONNECTION';
@@ -29,6 +30,9 @@ module.exports = {
             }
 
             state.connections.push(connection);
+        },
+        REMOVE_CURRENT_USER (state) {
+            state.currentUser = null;
         }
     },
 
@@ -44,6 +48,9 @@ module.exports = {
         },
         addConnection({ commit }, connection) {
             commit(ADD_CONNECTION, connection);
+        },
+        removeCurrentUser({ commit }) {
+            commit(REMOVE_CURRENT_USER);
         }
     }
 }
