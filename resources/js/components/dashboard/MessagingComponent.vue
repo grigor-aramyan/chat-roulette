@@ -1,36 +1,45 @@
 <template>
     <div>
-        <h1>Messaging</h1>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form>
+                    <h3>Messaging</h3>
 
-        <div v-if="section == 'MESSAGING'">
+                    <div v-if="section == 'MESSAGING'">
 
-            <div v-if="chatMessages">
-                <ul>
-                    <li v-for="msg in chatMessages" :key="msg.id">
-                        {{ msg.content }}
-                    </li>
-                </ul>
+                        <div v-if="chatMessages">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" :class="{ 'right-handed-message-style': msg.sendedFrom == currentUser.id }" v-for="msg in chatMessages" :key="msg.id">
+                                    <div>
+                                        <!--span class="date-style">{{ msg.date }}</span-->
+                                        {{ msg.date }}
+                                        {{ msg.content }}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <input v-model="currentMessage" class="form-control mb-2" type="text" placeholder="Type a message to send..." />
+                        <button @click.prevent="send" class="btn btn-success">Send</button>
+
+                        <button @click.prevent="endChatting" class="btn">Close chat</button>
+                    
+                    </div>
+
+                    <div v-if="section == 'END_OF_MESSAGING'">
+                        <div>
+                            <button @click.prevent="becomeFriends" class="btn btn-success">Become friends</button>
+                            <button @click.prevent="stayAnonimous" class="btn btn-danger">Stay anonymous</button>
+                        </div>
+                    </div>
+
+                    <p v-if="error" class="error mt-2">{{ error }}</p>
+                </form>
             </div>
-
-            <input v-model="currentMessage" placeholder="Type a message to send..." />
-            <button @click="send" class="btn btn-success">Send</button>
-
-            <br />
-
-            <button @click="endChatting">Close chat</button>
+            <div class="col-4"></div>
+        </div>
         
-        </div>
-
-        <div v-if="section == 'END_OF_MESSAGING'">
-            <div>
-                <button @click="becomeFriends" class="btn btn-success">Become friends</button>
-                <button @click="stayAnonimous" class="btn btn-danger">Stay anonymous</button>
-            </div>
-
-            <br />
-        </div>
-
-        <p v-if="error" style="color:red;">{{ error }}</p>
     </div>
 </template>
 
@@ -374,3 +383,25 @@
         }
     }
 </script>
+
+<style scoped>
+    h3 {
+        color: green;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+
+    .right-handed-message-style {
+        margin-left: auto;
+    }
+
+    .date-style {
+        color: silver;
+        font-size: 80%;
+        display: block;
+    }
+</style>
