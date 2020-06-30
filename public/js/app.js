@@ -8198,7 +8198,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nh2[data-v-782dcf83] {\n    text-align: center;\n    color: green;\n}\n.section[data-v-782dcf83] {\n    height: 100vh;\n    padding-top: 20vh;\n}\n", ""]);
+exports.push([module.i, "\nh2[data-v-782dcf83] {\n    text-align: center;\n    color: green;\n}\n.section[data-v-782dcf83] {\n    height: 100vh;\n    padding-top: 20vh;\n}\n.mission-description[data-v-782dcf83] {\n    font-style: italic;\n    color: silver;\n    font-size: 120%;\n}\n", ""]);
 
 // exports
 
@@ -40707,7 +40707,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col" }, [
-          _c("p", { staticStyle: { "font-style": "italic" } }, [
+          _c("p", { staticClass: "mission-description" }, [
             _vm._v(
               "\n                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n                    "
             )
