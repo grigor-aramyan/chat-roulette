@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-3">
         <h1>Dashboard</h1>
 
         <p class="email-info" v-if="currentUser">Your email: {{ currentUser.email }}</p>
@@ -16,9 +16,6 @@
             </div>
         </div>
 
-        <!--div v-if="currentSubPage == 'DEFAULT_DASHBOARD'">
-            <h1 style="color:yellow;">Default dashboard</h1>
-        </div-->
         <div v-else-if="currentSubPage == 'QUESTIONS_SUBPAGE'">
             <question-answering-component
                 @switch-to-viewing-answers="switchToViewingAnswers">
@@ -155,6 +152,7 @@
 
                                 this.setPairingUser(res.data);
                                 this.setCurrentUserMode('PENDING');
+                                this.error = '';
                                 this.connectIsVisible = false;
                                 this.currentSubPage = QUESTIONS_SUBPAGE;
 
@@ -270,15 +268,12 @@
 
     .email-info {
         font-style: italic;
+        font-size: 120%;
         color: greenyellow;
     }
 
-    .container {
-        background-color: gray;
-    }
-
     .error {
-        color: red;
+        color: yellow;
         text-align: center;
     }
 </style>

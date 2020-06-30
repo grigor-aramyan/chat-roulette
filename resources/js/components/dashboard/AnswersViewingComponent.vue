@@ -15,8 +15,8 @@
 
                     <p v-if="error" class="error">{{ error }}</p>
 
-                    <button @click.prevent="reject" class="btn btn-danger">Reject</button>
-                    <button @click.prevent="connect" class="btn btn-info">Connect</button>
+                    <button @click.prevent="reject" class="btn btn-danger mt-2">Reject</button>
+                    <button @click.prevent="connect" class="btn btn-info mt-2">Connect</button>
                 </form>
             </div>
             <div class="col-4"></div>
@@ -283,7 +283,7 @@
     }
 
     .error {
-        color: red;
+        color: yellow;
         text-align: center;
     }
 </style>

@@ -8,8 +8,8 @@
 
                     <div v-if="section == 'MESSAGING'">
 
-                        <div v-if="chatMessages">
-                            <ul class="list-group list-group-flush">
+                        <div id="messaging-list-div">
+                            <ul class="list-group list-group-flush list-group-height">
                                 <li :class="{
                                         'right-handed-message-style': msg.user_id == currentUser.id,
                                         'list-group-item': true
@@ -25,7 +25,7 @@
                         <input v-model="currentMessage" class="form-control mb-2" type="text" placeholder="Type a message to send..." />
                         <button @click.prevent="send" class="btn btn-success">Send</button>
 
-                        <button @click.prevent="endChatting" class="btn">Close chat</button>
+                        <button @click.prevent="endChatting" class="btn btn-dark">Close chat</button>
                     
                     </div>
 
@@ -398,7 +398,8 @@
     }
 
     .right-handed-message-style {
-        margin-left: auto;
+        text-align: right;
+        width: 100%;
     }
 
     .date-style {
@@ -406,5 +407,16 @@
         font-size: 80%;
         display: block;
         font-style: italic;
+    }
+
+    .list-group-height {
+        min-height: 40vh;
+        max-height: 40vh;
+        overflow-y: scroll;
+    }
+
+    #messaging-list-div {
+        min-height: 40vh;
+        background-color: white;
     }
 </style>

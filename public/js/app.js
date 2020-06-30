@@ -2567,9 +2567,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 
 
  // constants
@@ -2678,6 +2675,7 @@ var CHAT_SUBPAGE = 'CHAT_SUBPAGE';
 
             _this2.setCurrentUserMode('PENDING');
 
+            _this2.error = '';
             _this2.connectIsVisible = false;
             _this2.currentSubPage = QUESTIONS_SUBPAGE;
           }
@@ -8236,7 +8234,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-2c3c889f] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-2c3c889f] {\n    color: red;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-2c3c889f] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-2c3c889f] {\n    color: yellow;\n    text-align: center;\n}\n", ""]);
 
 // exports
 
@@ -8255,7 +8253,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh1[data-v-1c27d7e2] {\n    color: green;\n}\n.email-info[data-v-1c27d7e2] {\n    font-style: italic;\n    color: greenyellow;\n}\n.container[data-v-1c27d7e2] {\n    background-color: gray;\n}\n.error[data-v-1c27d7e2] {\n    color: red;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh1[data-v-1c27d7e2] {\n    color: green;\n}\n.email-info[data-v-1c27d7e2] {\n    font-style: italic;\n    font-size: 120%;\n    color: greenyellow;\n}\n.error[data-v-1c27d7e2] {\n    color: yellow;\n    text-align: center;\n}\n", ""]);
 
 // exports
 
@@ -8274,7 +8272,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-93a104c2] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-93a104c2] {\n    color: red;\n    text-align: center;\n}\n.right-handed-message-style[data-v-93a104c2] {\n    margin-left: auto;\n}\n.date-style[data-v-93a104c2] {\n    color: silver;\n    font-size: 80%;\n    display: block;\n    font-style: italic;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-93a104c2] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-93a104c2] {\n    color: red;\n    text-align: center;\n}\n.right-handed-message-style[data-v-93a104c2] {\n    text-align: right;\n    width: 100%;\n}\n.date-style[data-v-93a104c2] {\n    color: silver;\n    font-size: 80%;\n    display: block;\n    font-style: italic;\n}\n.list-group-height[data-v-93a104c2] {\n    min-height: 40vh;\n    max-height: 40vh;\n    overflow-y: scroll;\n}\n#messaging-list-div[data-v-93a104c2] {\n    min-height: 40vh;\n    background-color: white;\n}\n", ""]);
 
 // exports
 
@@ -8293,7 +8291,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-523c42c5] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-523c42c5] {\n    color: red;\n    text-align: center;\n}\n.question-style[data-v-523c42c5] {\n    color: white;\n    text-align: center;\n}\n.end-screen-style[data-v-523c42c5] {\n    color: yellow;\n    font-style: italic;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-523c42c5] {\n    color: green;\n    text-align: center;\n}\n.error[data-v-523c42c5] {\n    color: yellow;\n    text-align: center;\n}\n.question-style[data-v-523c42c5] {\n    color: white;\n    text-align: center;\n}\n.end-screen-style[data-v-523c42c5] {\n    color: yellow;\n    font-style: italic;\n    text-align: center;\n}\n", ""]);
 
 // exports
 
@@ -41046,7 +41044,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-danger",
+              staticClass: "btn btn-danger mt-2",
               on: {
                 click: function($event) {
                   $event.preventDefault()
@@ -41060,7 +41058,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-info",
+              staticClass: "btn btn-info mt-2",
               on: {
                 click: function($event) {
                   $event.preventDefault()
@@ -41099,7 +41097,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container mt-3" }, [
     _c("h1", [_vm._v("Dashboard")]),
     _vm._v(" "),
     _vm.currentUser
@@ -41202,44 +41200,45 @@ var render = function() {
           _vm._v(" "),
           _vm.section == "MESSAGING"
             ? _c("div", [
-                _vm.chatMessages
-                  ? _c("div", [
-                      _c(
-                        "ul",
-                        { staticClass: "list-group list-group-flush" },
-                        _vm._l(_vm.chatMessages, function(msg) {
-                          return _c(
-                            "li",
-                            {
-                              key: msg.id,
-                              class: {
-                                "right-handed-message-style":
-                                  msg.user_id == _vm.currentUser.id,
-                                "list-group-item": true
-                              }
-                            },
-                            [
-                              _c("div", [
-                                _c("span", { staticClass: "date-style" }, [
-                                  _vm._v(
-                                    _vm._s(
-                                      msg.created_at.split("T")[1].split(".")[0]
-                                    )
-                                  )
-                                ]),
-                                _vm._v(
-                                  "\n                                    " +
-                                    _vm._s(msg.content) +
-                                    "\n                                "
+                _c("div", { attrs: { id: "messaging-list-div" } }, [
+                  _c(
+                    "ul",
+                    {
+                      staticClass:
+                        "list-group list-group-flush list-group-height"
+                    },
+                    _vm._l(_vm.chatMessages, function(msg) {
+                      return _c(
+                        "li",
+                        {
+                          key: msg.id,
+                          class: {
+                            "right-handed-message-style":
+                              msg.user_id == _vm.currentUser.id,
+                            "list-group-item": true
+                          }
+                        },
+                        [
+                          _c("div", [
+                            _c("span", { staticClass: "date-style" }, [
+                              _vm._v(
+                                _vm._s(
+                                  msg.created_at.split("T")[1].split(".")[0]
                                 )
-                              ])
-                            ]
-                          )
-                        }),
-                        0
+                              )
+                            ]),
+                            _vm._v(
+                              "\n                                    " +
+                                _vm._s(msg.content) +
+                                "\n                                "
+                            )
+                          ])
+                        ]
                       )
-                    ])
-                  : _vm._e(),
+                    }),
+                    0
+                  )
+                ]),
                 _vm._v(" "),
                 _c("input", {
                   directives: [
@@ -41283,7 +41282,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn",
+                    staticClass: "btn btn-dark",
                     on: {
                       click: function($event) {
                         $event.preventDefault()
