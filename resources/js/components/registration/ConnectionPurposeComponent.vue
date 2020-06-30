@@ -58,4 +58,9 @@
         margin-top: 20vh;
         text-align: center;
     }
+
+    label {
+        color: silver;
+        font-size: 120%;
+    }
 </style>

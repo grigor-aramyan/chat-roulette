@@ -107,7 +107,11 @@
     }
 
     .error {
-        color: red;
+        color: yellow;
         text-align: center;
+    }
+
+    label {
+        color: silver;
     }
 </style>

@@ -8217,7 +8217,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nh1[data-v-4d2414bf] {\n    color: green;\n    text-align: center;\n    margin-top: 20vh;\n}\n.error[data-v-4d2414bf] {\n    color: red;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh1[data-v-4d2414bf] {\n    color: green;\n    text-align: center;\n    margin-top: 20vh;\n}\n.error[data-v-4d2414bf] {\n    color: yellow;\n    text-align: center;\n}\n", ""]);
 
 // exports
 
@@ -8312,7 +8312,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-d8920090] {\n    color: green;\n    margin-top: 20vh;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-d8920090] {\n    color: green;\n    margin-top: 20vh;\n    text-align: center;\n}\nlabel[data-v-d8920090] {\n    color: silver;\n    font-size: 120%;\n}\n", ""]);
 
 // exports
 
@@ -8331,7 +8331,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-0fbe14ad] {\n    color: green;\n    margin-top: 10vh;\n    text-align: center;\n}\n\n", ""]);
+exports.push([module.i, "\nh3[data-v-0fbe14ad] {\n    color: green;\n    margin-top: 10vh;\n    text-align: center;\n}\nlabel[data-v-0fbe14ad] {\n    color: silver;\n    font-size: 120%;\n}\n", ""]);
 
 // exports
 
@@ -8350,7 +8350,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-4209aba4] {\n    color: green;\n    margin-top: 5vh;\n    text-align: center;\n}\n.error[data-v-4209aba4] {\n    color: red;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-4209aba4] {\n    color: green;\n    margin-top: 5vh;\n    text-align: center;\n}\n.error[data-v-4209aba4] {\n    color: yellow;\n    text-align: center;\n}\nlabel[data-v-4209aba4] {\n    color: silver;\n}\n", ""]);
 
 // exports
 
@@ -8388,7 +8388,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nh3[data-v-34790110] {\n    color: green;\n    margin-top: 5vh;\n    text-align: center;\n}\n.error[data-v-34790110] {\n    color: red;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nh3[data-v-34790110] {\n    color: green;\n    margin-top: 5vh;\n    text-align: center;\n}\n.error[data-v-34790110] {\n    color: yellow;\n    text-align: center;\n}\n", ""]);
 
 // exports
 

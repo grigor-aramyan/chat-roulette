@@ -96,7 +96,7 @@
     }
 
     .error {
-        color: red;
+        color: yellow;
         text-align: center;
     }
 </style>

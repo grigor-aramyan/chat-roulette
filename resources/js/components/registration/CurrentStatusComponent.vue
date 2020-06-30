@@ -52,4 +52,8 @@
         text-align: center;
     }
 
+    label {
+        color: silver;
+        font-size: 120%;
+    }
 </style>
